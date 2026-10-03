@@ -7,6 +7,8 @@ is ever processed**.
 
 > Designed and built by Muhammed Elhuseyin.
 
+**Live demo:** <https://housinasaad-creator.github.io/khayt-fashion-store/>
+
 ## Highlights
 
 - **3D knitwear viewer** — a procedurally-modelled knit sweater rendered with three.js
