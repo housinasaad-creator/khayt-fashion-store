@@ -19,20 +19,32 @@ class HangerRail extends StatefulWidget {
 }
 
 class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateMixin {
+  /// The rail loops forever: the list is repeated so many times that nobody
+  /// reaches either end, and it starts in the middle so both arrows keep working.
+  static const loops = 1000;
+  static const gap = 26.0;
   final ScrollController sc = ScrollController();
   late final Ticker ticker;
   final ValueNotifier<double> swing = ValueNotifier<double>(0);
   double angle = 0, vel = 0, impulse = 0, lastPix = 0;
   Duration last = Duration.zero;
   int focusIdx = -1;
+  bool ready = false;
   double get itemW => Bp.mobile(context) ? 210 : 264;
-  static const gap = 26.0;
+  int get n => widget.items.length;
 
   @override
   void initState() {
     super.initState();
     sc.addListener(_onScroll);
     ticker = createTicker(_tick);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !sc.hasClients) return;
+      final start = loops * n * (itemW + gap);
+      lastPix = start;
+      sc.jumpTo(start);
+      ready = true;
+    });
   }
 
   @override
@@ -44,19 +56,17 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
   }
 
   void _onScroll() {
+    if (!ready || !sc.hasClients) return;
     final px = sc.offset;
     impulse += px - lastPix;
     lastPix = px;
-    if (!sc.hasClients) return;
     // the swing simulation only runs while the rail is moving
     if (!ticker.isActive) {
       last = Duration.zero;
       ticker.start();
     }
     final vw = sc.position.viewportDimension;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
-    var idx = ((px + vw / 2 - 20) / (itemW + gap)).floor().clamp(0, widget.items.length - 1);
-    if (rtl) idx = idx; // list is already mirrored by the scrollable
+    final idx = ((px + vw / 2 - 20) / (itemW + gap)).floor() % n;
     if (idx != focusIdx) {
       focusIdx = idx;
       widget.onFocus?.call(widget.items[idx]);
@@ -86,14 +96,17 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
 
   void _nudge(int dir) {
     if (!sc.hasClients) return;
-    final target = (sc.offset + dir * (itemW + gap) * 2).clamp(0.0, sc.position.maxScrollExtent);
-    sc.animateTo(target, duration: const Duration(milliseconds: 750), curve: Curves.easeInOutCubic);
+    sc.animateTo(sc.offset + dir * (itemW + gap) * 2, duration: const Duration(milliseconds: 750), curve: Curves.easeInOutCubic);
   }
 
   @override
   Widget build(BuildContext context) {
     final mobile = Bp.mobile(context);
-    final height = (itemW * 4 / 3) + 150;
+    final width = itemW;
+    final height = (width * 4 / 3) + 150;
+    // vertical centre of the photos (rail bar + hanger + half a photo), minus half an arrow
+    final arrowTop = 61 + width * 2 / 3 - 25;
+    final ar = context.isAr;
     return Column(children: [
       SizedBox(
         height: height,
@@ -113,29 +126,29 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
           ),
           ScrollConfiguration(
             behavior: const MaterialScrollBehavior().copyWith(dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse, PointerDeviceKind.trackpad, PointerDeviceKind.stylus}, scrollbars: false),
-            child: ListView.separated(
+            child: ListView.builder(
               controller: sc,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: Bp.pad(context)),
-              itemCount: widget.items.length,
-              separatorBuilder: (_, _) => const SizedBox(width: gap),
-              itemBuilder: (context, i) => _Hanging(product: widget.items[i], index: i, width: itemW, swing: swing),
+              itemExtent: width + gap,
+              itemCount: n * loops * 2,
+              itemBuilder: (context, i) {
+                final k = i % n;
+                return Padding(
+                  padding: const EdgeInsetsDirectional.only(end: gap),
+                  child: _Hanging(product: widget.items[k], index: k, width: width, swing: swing),
+                );
+              },
             ),
           ),
+          if (!mobile) ...[
+            Positioned(left: 14, top: arrowTop, child: _Arrow(Icons.arrow_back_rounded, () => _nudge(ar ? 1 : -1))),
+            Positioned(right: 14, top: arrowTop, child: _Arrow(Icons.arrow_forward_rounded, () => _nudge(ar ? -1 : 1))),
+          ],
         ]),
       ),
-      if (!mobile)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Bp.pad(context)),
-          child: Row(children: [
-            Text(context.t('dragRail'), style: KText.body(context.isAr, 13, color: KColors.muted)),
-            const Spacer(),
-            _Arrow(Icons.arrow_back_rounded, () => _nudge(context.isAr ? 1 : -1)),
-            const SizedBox(width: 10),
-            _Arrow(Icons.arrow_forward_rounded, () => _nudge(context.isAr ? -1 : 1)),
-          ]),
-        ),
+      if (!mobile) Text(context.t('dragRail'), style: KText.body(ar, 13, color: KColors.muted)),
     ]);
   }
 }
@@ -147,8 +160,15 @@ class _Arrow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Material(
         color: KColors.ink,
+        elevation: 6,
+        shadowColor: Colors.black.withValues(alpha: 0.35),
         shape: const CircleBorder(),
-        child: InkWell(customBorder: const CircleBorder(), onTap: onTap, child: Padding(padding: const EdgeInsets.all(12), child: Icon(icon, color: Colors.white, size: 20))),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          // physical left/right arrows: never mirrored in Arabic
+          child: Padding(padding: const EdgeInsets.all(14), child: Icon(icon, color: Colors.white, size: 22, textDirection: TextDirection.ltr)),
+        ),
       );
 }
 

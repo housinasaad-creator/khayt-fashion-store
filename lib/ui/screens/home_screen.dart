@@ -55,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final mobile = Bp.mobile(context);
     final ar = context.isAr;
-    final railItems = [for (final p in kProducts) if (p.isNew || p.onSale) p].take(10).toList();
+    final featured = [for (final p in kProducts) if (p.isNew || p.onSale) p];
+    final railItems = [...featured, for (final p in kProducts) if (!featured.contains(p)) p].take(18).toList();
     final arrivals = kProducts.where((p) => p.id != featProduct.id).take(8).toList();
 
     return PageBody(children: [
