@@ -19,8 +19,6 @@ class Product {
   final String descAr;
   final String fabricEn;
   final String fabricAr;
-  final bool is3d;
-  final String style; // crew | oversize (3D only)
   final List<ColorOpt> colors;
   final List<String> sizes;
   final double rating;
@@ -40,8 +38,6 @@ class Product {
     required this.descAr,
     required this.fabricEn,
     required this.fabricAr,
-    this.is3d = false,
-    this.style = 'crew',
     this.colors = const [],
     this.sizes = const ['XS', 'S', 'M', 'L', 'XL'],
     required this.rating,
@@ -56,18 +52,6 @@ class Product {
   bool get onSale => oldPrice != null;
 }
 
-const _knitColors = [
-  ColorOpt('Sand', 'رملي', Color(0xFFD8C3A5)),
-  ColorOpt('Terracotta', 'قرميدي', Color(0xFFC4572F)),
-  ColorOpt('Forest', 'أخضر غابة', Color(0xFF2F5D50)),
-  ColorOpt('Midnight', 'كحلي ليلي', Color(0xFF1E2A4A)),
-  ColorOpt('Rose', 'وردي', Color(0xFFD98FA0)),
-  ColorOpt('Mustard', 'خردلي', Color(0xFFE0A526)),
-  ColorOpt('Charcoal', 'فحمي', Color(0xFF3A3A3F)),
-  ColorOpt('Ivory', 'عاجي', Color(0xFFF1EBDD)),
-  ColorOpt('Sky', 'سماوي', Color(0xFF7FA8D1)),
-];
-
 const List<Product> kProducts = [
   Product(
     id: 'heritage-crew',
@@ -75,19 +59,17 @@ const List<Product> kProducts = [
     nameAr: 'سويتر هيريتج بياقة دائرية',
     cats: ['knitwear', 'men', 'women'],
     price: 128,
+    image: 'assets/images/products/crewneck.jpg',
     descEn:
-        'Our signature stockinette knit, spun from soft merino-blend yarn and finished with ribbed cuffs and hem. Spin it, recolor it, and see it from every side before you add it to your bag.',
+        'Our signature crew in a soft merino-blend knit, finished with ribbed cuffs and hem. A quiet everyday layer that goes with everything.',
     descAr:
-        'حياكتنا المميزة من خيوط ميرينو ناعمة مع أساور وحاشية مضلّعة. دوّره وغيّر لونه وشاهده من كل الجهات قبل ما تضيفه للسلة.',
+        'سويترنا المميز بياقة دائرية من حياكة ميرينو ناعمة مع أساور وحاشية مضلّعة. قطعة هادئة لكل يوم تناسب كل شي.',
     fabricEn: '60% merino wool, 40% recycled cotton. Machine wash cold, lay flat to dry.',
     fabricAr: '٦٠٪ صوف ميرينو، ٤٠٪ قطن معاد تدويره. غسيل بارد بالغسالة وتجفيف أفقي.',
-    is3d: true,
-    style: 'crew',
-    colors: _knitColors,
     rating: 4.8,
     reviews: 214,
     isNew: true,
-    accent: Color(0xFFC4572F),
+    accent: Color(0xFF6E7A72),
   ),
   Product(
     id: 'oversized-rib',
@@ -95,19 +77,17 @@ const List<Product> kProducts = [
     nameAr: 'كنزة واسعة مضلّعة',
     cats: ['knitwear', 'men', 'women'],
     price: 148,
+    image: 'assets/images/products/chunky.jpg',
     descEn:
         'A relaxed drop-shoulder silhouette in a chunky rib. Roomy through the body, long in the sleeve, made to be worn over everything.',
     descAr:
         'قصّة مريحة بكتف نازل وحياكة مضلّعة سميكة. واسعة عند الجسم وطويلة الأكمام، مصمّمة لتلبسها فوق كل شي.',
     fabricEn: '70% organic cotton, 30% wool. Machine wash cold.',
     fabricAr: '٧٠٪ قطن عضوي، ٣٠٪ صوف. غسيل بارد بالغسالة.',
-    is3d: true,
-    style: 'oversize',
-    colors: _knitColors,
     rating: 4.7,
     reviews: 168,
     isNew: true,
-    accent: Color(0xFF1E2A4A),
+    accent: Color(0xFFC8892A),
   ),
   Product(
     id: 'poppy-dress',

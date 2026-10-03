@@ -34,8 +34,8 @@ class KText {
   }
 }
 
-String money(double v) => '\$${v.toStringAsFixed(2)}';
-String money0(double v) => '\$${v.toStringAsFixed(v == v.roundToDouble() ? 0 : 2)}';
+String money(double v) => '€${v.toStringAsFixed(2)}';
+String money0(double v) => '€${v.toStringAsFixed(v == v.roundToDouble() ? 0 : 2)}';
 
 ThemeData buildTheme(bool ar) {
   final base = ThemeData(

@@ -2,7 +2,7 @@
 const kCompanyEn = 'Khayt Atelier Ltd. (fictional company)';
 const kCompanyAr = 'شركة أتيليه خيط المحدودة (شركة وهمية)';
 const kEmail = 'hello@khayt.example';
-const kPhone = '+1 (555) 010-0199';
+const kPhone = '+49 30 23125 000';
 const kAddressEn = '12 Loom Street, Studio 4, Imaginary City, 00000';
 const kAddressAr = '١٢ شارع النول، الاستوديو ٤، مدينة خيالية، ٠٠٠٠٠';
 
@@ -128,7 +128,7 @@ const termsEn = <Section>[
     'You may browse and use the site for lawful personal purposes. You agree not to misuse it, attempt to gain unauthorised access, scrape it at scale, or interfere with its operation.',
   ]),
   Section('3. Products and pricing', [
-    'We try to display colours, sizes and descriptions accurately, but screens vary. The 3D viewer is an illustration of the garment. All prices are shown in US dollars and include no taxes unless stated; estimated tax is added at checkout.',
+    'We try to display colours, sizes and descriptions accurately, but screens vary. Photographs are illustrative and real colours may vary slightly between screens. All prices are shown in euros and include VAT.',
     'We may correct pricing or description errors and cancel affected orders with a full refund.',
   ]),
   Section('4. Orders and payment', [
@@ -162,7 +162,7 @@ const termsAr = <Section>[
     'يمكنك تصفح الموقع واستخدامه لأغراض شخصية مشروعة. وتوافق على عدم إساءة استخدامه أو محاولة الوصول غير المصرح به أو سحب محتواه على نطاق واسع أو التدخل في عمله.',
   ]),
   Section('٣. المنتجات والأسعار', [
-    'نحاول عرض الألوان والمقاسات والأوصاف بدقة لكن الشاشات تختلف. العارض الثلاثي الأبعاد توضيح للقطعة. جميع الأسعار بالدولار الأمريكي ولا تشمل الضرائب ما لم يُذكر، وتُضاف ضريبة تقديرية عند الدفع.',
+    'نحاول عرض الألوان والمقاسات والأوصاف بدقة لكن الشاشات تختلف. الصور للتوضيح فقط وقد تختلف الألوان قليلاً بين الشاشات. جميع الأسعار باليورو وتشمل ضريبة القيمة المضافة.',
     'قد نصحّح أخطاء الأسعار أو الأوصاف ونلغي الطلبات المتأثرة مع استرداد كامل.',
   ]),
   Section('٤. الطلبات والدفع', [
@@ -191,13 +191,13 @@ const termsAr = <Section>[
 // ----------------------------------------------------------- SHIPPING
 const shippingEn = <Section>[
   Section('Delivery options', [
-    'Standard: 3 to 6 business days. Free on orders over \$120, otherwise \$9.',
-    'Express: 1 to 2 business days for a flat \$14.',
+    'Standard: 3 to 6 business days. Free on orders over €120, otherwise €9.',
+    'Express: 1 to 2 business days for a flat €14.',
     'Orders placed before 14:00 (Mon to Fri) leave our studio the same day. Delivery times start from dispatch.',
   ]),
   Section('Where we ship', [
-    'The United States, United Kingdom, Germany, Turkey, the United Arab Emirates, Saudi Arabia, Qatar, Jordan, Egypt and Canada, with more countries coming soon.',
-    'International orders may be subject to import duties and taxes charged by the destination country. These are the recipient\'s responsibility.',
+    'Germany, Austria, Switzerland, France, the Netherlands, Belgium, Italy, Spain, Sweden, Poland, Ireland and the United Kingdom, with more countries coming soon.',
+    'Orders to countries outside the EU (such as Switzerland or the United Kingdom) may be subject to import duties and taxes charged by the destination country. These are the recipient\'s responsibility.',
   ]),
   Section('Tracking', [
     'As soon as your order ships you receive an email with a tracking link.',
@@ -219,13 +219,13 @@ const shippingEn = <Section>[
 
 const shippingAr = <Section>[
   Section('خيارات التوصيل', [
-    'عادي: من ٣ إلى ٦ أيام عمل. مجاني للطلبات فوق ١٢٠\$ وإلا ٩\$.',
-    'سريع: من ١ إلى ٢ يوم عمل بسعر ثابت ١٤\$.',
+    'عادي: من ٣ إلى ٦ أيام عمل. مجاني للطلبات فوق ١٢٠ يورو وإلا ٩ يورو.',
+    'سريع: من ١ إلى ٢ يوم عمل بسعر ثابت ١٤ يورو.',
     'الطلبات قبل الساعة ١٤:٠٠ (من الإثنين إلى الجمعة) تغادر الأتيليه في اليوم نفسه، وتبدأ مدة التوصيل من لحظة الشحن.',
   ]),
   Section('إلى أين نشحن', [
-    'الولايات المتحدة والمملكة المتحدة وألمانيا وتركيا والإمارات والسعودية وقطر والأردن ومصر وكندا، ودول أخرى قريباً.',
-    'قد تخضع الطلبات الدولية لرسوم وضرائب استيراد تفرضها دولة الوجهة وهي على مسؤولية المستلم.',
+    'ألمانيا والنمسا وسويسرا وفرنسا وهولندا وبلجيكا وإيطاليا وإسبانيا والسويد وبولندا وأيرلندا والمملكة المتحدة، ودول أخرى قريباً.',
+    'قد تخضع الطلبات إلى دول خارج الاتحاد الأوروبي (مثل سويسرا والمملكة المتحدة) لرسوم وضرائب استيراد تفرضها دولة الوجهة وهي على مسؤولية المستلم.',
   ]),
   Section('التتبّع', [
     'بمجرد شحن طلبك يصلك بريد فيه رابط التتبّع.',
@@ -254,10 +254,10 @@ class Qa {
 
 const faqEn = <Qa>[
   Qa('Is Khayt a real store?', 'No. Khayt is a fictional brand created for a portfolio project. Products, prices, reviews and orders are imaginary, and no payment is ever taken.'),
-  Qa('How does the 3D viewer work?', 'The knitwear pieces are modelled in 3D right in your browser. Drag to rotate, tap a swatch to change colour, and notice that the whole store takes the colour you pick.'),
+  Qa('Why does the whole store change colour?', 'Each piece has its own colour. As you browse the hero, the rail or a product page, the store takes on that piece\'s colour, a small design touch built into this demo.'),
   Qa('Which payment methods do you accept?', 'Visa and Mastercard. At checkout the card form detects the brand as you type and runs a simulated 3-D Secure step. Use the test card 4242 4242 4242 4242 with any future date and any CVC.'),
   Qa('Is my card data safe?', 'In this demo your card details never leave the page. A live store would hand them directly to a PCI-compliant payment provider and never store them.'),
-  Qa('How long does delivery take?', 'Standard delivery takes 3 to 6 business days and express 1 to 2 business days. Orders over \$120 ship free.'),
+  Qa('How long does delivery take?', 'Standard delivery takes 3 to 6 business days and express 1 to 2 business days. Orders over €120 ship free.'),
   Qa('What is your returns policy?', 'Free returns within 30 days of delivery for unworn items with their tags.'),
   Qa('How do I choose my size?', 'Each product page lists its sizes. Knits run true to size; the Oversized Rib Knit is cut roomy, so take your usual size for the intended look or one size down for a closer fit.'),
   Qa('Is there a promo code?', 'Yes. Try KHAYT10 in your bag for 10% off.'),
@@ -266,10 +266,10 @@ const faqEn = <Qa>[
 
 const faqAr = <Qa>[
   Qa('هل خيط متجر حقيقي؟', 'لا. خيط علامة وهمية صُنعت لمشروع عرض أعمال. المنتجات والأسعار والتقييمات والطلبات خيالية ولا تؤخذ أي مدفوعات.'),
-  Qa('كيف يعمل العارض الثلاثي الأبعاد؟', 'قطع التريكو مصمّمة بالـ 3D داخل متصفحك مباشرة. اسحب للتدوير واضغط على لون لتغييره، ولاحظ أن المتجر كله يأخذ اللون الذي تختاره.'),
+  Qa('لماذا يتغيّر لون المتجر كله؟', 'لكل قطعة لونها الخاص. وأثناء تصفحك للصور الرئيسية أو الشماعة أو صفحة المنتج يأخذ المتجر لون القطعة، لمسة تصميم صغيرة في هذا العرض.'),
   Qa('ما طرق الدفع المقبولة؟', 'فيزا وماستركارد. نموذج البطاقة يتعرف على نوعها أثناء الكتابة وينفّذ خطوة 3-D Secure محاكاة. استخدم البطاقة التجريبية 4242 4242 4242 4242 مع أي تاريخ مستقبلي وأي CVC.'),
   Qa('هل بيانات بطاقتي آمنة؟', 'في هذا العرض لا تغادر بيانات بطاقتك الصفحة. المتجر الحقيقي يمررها مباشرة لمزوّد دفع متوافق مع PCI ولا يخزّنها أبداً.'),
-  Qa('كم يستغرق التوصيل؟', 'التوصيل العادي من ٣ إلى ٦ أيام عمل والسريع من ١ إلى ٢ يوم عمل. الطلبات فوق ١٢٠\$ شحنها مجاني.'),
+  Qa('كم يستغرق التوصيل؟', 'التوصيل العادي من ٣ إلى ٦ أيام عمل والسريع من ١ إلى ٢ يوم عمل. الطلبات فوق ١٢٠ يورو شحنها مجاني.'),
   Qa('ما سياسة الإرجاع؟', 'إرجاع مجاني خلال ٣٠ يوماً من التسليم للقطع غير الملبوسة وببطاقاتها.'),
   Qa('كيف أختار مقاسي؟', 'تعرض كل صفحة منتج مقاساتها. التريكو بمقاسه الطبيعي، أما الكنزة الواسعة المضلّعة فقصّتها واسعة، فخذ مقاسك المعتاد للإطلالة المقصودة أو مقاساً أصغر لقصّة أقرب.'),
   Qa('هل يوجد رمز خصم؟', 'نعم. جرّب KHAYT10 في سلتك للحصول على خصم ١٠٪.'),
@@ -280,10 +280,10 @@ const faqAr = <Qa>[
 const aboutStoryEn = [
   'Khayt means "thread" in Arabic, and everything we imagine starts with one. A single honest thread, spun carefully, can become a sweater that lasts a decade.',
   'We are a fictional atelier, so we can say what we wish a real brand would: make fewer things, make them well, and tell people exactly what they are made of.',
-  'This store was built as a portfolio piece in Flutter: a full cart, card checkout, bilingual layout (English and Arabic, with real right-to-left support) and a knitwear viewer drawn from scratch in three.js with no 3D model files at all.',
+  'This store was built as a portfolio piece in Flutter: a full cart, card checkout, bilingual layout (English and Arabic, with real right-to-left support) and a storefront whose whole colour palette follows the piece you are looking at.',
 ];
 const aboutStoryAr = [
   'خيط تعني "الخيط"، وكل ما نتخيله يبدأ بخيط واحد. خيط صادق واحد يُغزل بعناية يمكن أن يصير كنزة تدوم عشر سنوات.',
   'نحن أتيليه وهمي، لذلك نقول ما نتمنى أن تقوله علامة حقيقية: اصنع أقل، اصنعه جيداً، وأخبر الناس بالضبط مما صُنع.',
-  'بُني هذا المتجر كمشروع لعرض الأعمال بـ Flutter: سلة كاملة ودفع ببطاقة وواجهة ثنائية اللغة (إنجليزي وعربي مع دعم حقيقي لاتجاه اليمين لليسار) وعارض تريكو مرسوم من الصفر بـ three.js بدون أي ملفات موديلات ثلاثية الأبعاد.',
+  'بُني هذا المتجر كمشروع لعرض الأعمال بـ Flutter: سلة كاملة ودفع ببطاقة وواجهة ثنائية اللغة (إنجليزي وعربي مع دعم حقيقي لاتجاه اليمين لليسار) وواجهة تتغيّر ألوانها كلها مع القطعة التي تنظر إليها.',
 ];

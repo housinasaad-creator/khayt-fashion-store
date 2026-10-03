@@ -32,7 +32,7 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     sc.addListener(_onScroll);
-    ticker = createTicker(_tick)..start();
+    ticker = createTicker(_tick);
   }
 
   @override
@@ -48,6 +48,11 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
     impulse += px - lastPix;
     lastPix = px;
     if (!sc.hasClients) return;
+    // the swing simulation only runs while the rail is moving
+    if (!ticker.isActive) {
+      last = Duration.zero;
+      ticker.start();
+    }
     final vw = sc.position.viewportDimension;
     final rtl = Directionality.of(context) == TextDirection.rtl;
     var idx = ((px + vw / 2 - 20) / (itemW + gap)).floor().clamp(0, widget.items.length - 1);
@@ -73,6 +78,7 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
       if (swing.value != 0) swing.value = 0;
       angle = 0;
       vel = 0;
+      ticker.stop();
       return;
     }
     swing.value = angle;

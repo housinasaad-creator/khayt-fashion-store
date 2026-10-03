@@ -69,8 +69,9 @@ class AppState extends ChangeNotifier {
   double get subtotal => cart.fold(0.0, (a, l) => a + l.total);
   double get discount => promo == 'KHAYT10' ? subtotal * 0.10 : 0;
   double get shipping => subtotal == 0 ? 0 : ((subtotal - discount) >= 120 ? 0 : 9);
-  double get tax => (subtotal - discount) * 0.08;
-  double get total => subtotal - discount + shipping + tax;
+  /// VAT (19 %) is already included in the shown prices, as in EU shops.
+  double get tax => (subtotal - discount) * 19 / 119;
+  double get total => subtotal - discount + shipping;
 
   void addToCart(Product p, {required String size, int colorIndex = 0, int qty = 1}) {
     final existing = cart.where((l) => l.product.id == p.id && l.size == size && l.colorIndex == colorIndex);

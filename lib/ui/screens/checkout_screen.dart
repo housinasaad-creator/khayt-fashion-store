@@ -50,7 +50,7 @@ bool _luhn(String digits) {
   return sum % 10 == 0;
 }
 
-const _countries = ['United States', 'United Kingdom', 'Germany', 'Turkey', 'United Arab Emirates', 'Saudi Arabia', 'Qatar', 'Jordan', 'Egypt', 'Canada'];
+const _countries = ['Germany', 'Austria', 'Switzerland', 'France', 'Netherlands', 'Belgium', 'Italy', 'Spain', 'Sweden', 'Poland', 'Ireland', 'United Kingdom'];
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -83,7 +83,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   double _shipping(AppState a) => express ? 14 : a.shipping;
-  double _total(AppState a) => a.subtotal - a.discount + _shipping(a) + a.tax;
+  double _total(AppState a) => a.subtotal - a.discount + _shipping(a);
 
   String? _req(String? v) => (v == null || v.trim().isEmpty) ? context.t('required') : null;
 
@@ -133,7 +133,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       discount: order.discount,
       shipping: shippingCost,
       tax: order.tax,
-      total: order.subtotal - order.discount + shippingCost + order.tax,
+      total: order.subtotal - order.discount + shippingCost,
       email: order.email,
       name: order.name,
       city: order.city,

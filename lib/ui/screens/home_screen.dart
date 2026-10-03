@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../core/app_state.dart';
@@ -8,8 +10,8 @@ import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/hanger_rail.dart';
 import '../widgets/product_grid.dart';
+import '../widgets/product_visual.dart';
 import '../widgets/shell.dart';
-import '../widgets/viewer3d.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,25 +20,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final heroProduct = productById('heritage-crew')!;
+  static const _slideIds = ['oversized-rib', 'sunset-crewneck', 'heritage-crew', 'fringe-poncho'];
+  late final List<Product> slides = [for (final id in _slideIds) productById(id)!];
   final featProduct = productById('oversized-rib')!;
-  int heroColor = 1;
-  int featColor = 3;
+  int slide = 0;
+  bool hovering = false;
+  DateTime? pausedUntil;
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.appRead.setAccent(heroProduct.colors[heroColor].color);
+    timer = Timer.periodic(const Duration(seconds: 5), (_) {
+      final paused = hovering || (pausedUntil != null && DateTime.now().isBefore(pausedUntil!));
+      if (!paused && mounted) _select((slide + 1) % slides.length);
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.appRead.setAccent(slides[slide].accent);
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void _select(int i) {
+    setState(() => slide = i);
+    context.appRead.setAccent(slides[i].accent);
   }
 
   @override
   Widget build(BuildContext context) {
     final mobile = Bp.mobile(context);
     final ar = context.isAr;
-    final railItems = [for (final p in kProducts) if (p.isNew || p.is3d || p.onSale) p].take(10).toList();
-    final arrivals = kProducts.where((p) => !p.is3d).take(8).toList();
+    final railItems = [for (final p in kProducts) if (p.isNew || p.onSale) p].take(10).toList();
+    final arrivals = kProducts.where((p) => p.id != featProduct.id).take(8).toList();
 
     return PageBody(children: [
       _hero(context, mobile, ar),
@@ -47,12 +67,16 @@ class _HomeScreenState extends State<HomeScreen> {
       const SizedBox(height: 18),
       HangerRail(
         items: railItems,
-        onFocus: (p) => context.appRead.setAccent(p.is3d ? p.colors[heroColor].color : p.accent),
+        onFocus: (p) {
+          // the visitor is browsing the rail: stop the hero slideshow fighting over the colour
+          pausedUntil = DateTime.now().add(const Duration(minutes: 5));
+          context.appRead.setAccent(p.accent);
+        },
       ),
       const SizedBox(height: 80),
       _categories(context, mobile),
       const SizedBox(height: 90),
-      _featured3d(context, mobile, ar),
+      _featured(context, mobile, ar),
       const SizedBox(height: 90),
       Constrained(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -78,9 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _hero(BuildContext context, bool mobile, bool ar) {
     final app = context.app;
     final accent = app.accent;
-    final colors = heroProduct.colors;
+    final cur = slides[slide];
     final text = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      FadeSlideIn(child: Text(ar ? context.t('heroEyebrow') : context.t('heroEyebrow'), style: KText.label(ar, color: accent, size: 12.5))),
+      FadeSlideIn(child: Text(context.t('heroEyebrow'), style: KText.label(ar, color: accent, size: 12.5))),
       const SizedBox(height: 18),
       FadeSlideIn(delayMs: 120, child: Text(context.t('heroTitle1'), style: KText.display(ar, mobile ? 46 : 84, w: FontWeight.w700, h: 1.0))),
       FadeSlideIn(
@@ -94,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
         delayMs: 520,
         child: Wrap(spacing: 14, runSpacing: 14, children: [
           KButton(label: context.t('shopNow'), icon: Icons.arrow_forward_rounded, onTap: () => Go.top('/shop')),
-          KButton(label: context.t('tryIn3d'), outline: true, icon: Icons.threed_rotation_rounded, onTap: () => Go.product(heroProduct.id)),
+          KButton(label: context.t('exploreKnit'), outline: true, icon: Icons.checkroom_rounded, onTap: () => Go.top('/shop?cat=knitwear')),
         ]),
       ),
       const SizedBox(height: 34),
@@ -110,72 +134,99 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ]);
 
-    final viewer = Column(children: [
-      AspectRatio(
-        aspectRatio: mobile ? 1 : 1.0,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            gradient: RadialGradient(center: const Alignment(0, -0.1), radius: 0.95, colors: [Color.lerp(Colors.white, accent, 0.32)!, Color.lerp(KColors.bg, accent, 0.28)!]),
-            boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.30), blurRadius: 60, offset: const Offset(0, 30))],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: Stack(fit: StackFit.expand, children: [
-              Viewer3D(key: const ValueKey('hero-viewer'), style: heroProduct.style, color: colors[heroColor].color),
-              PositionedDirectional(
-                top: 18,
-                start: 20,
-                child: Badge3('3D · ${context.t('drag3d')}', color: Colors.white.withValues(alpha: 0.85), fg: KColors.ink),
+    Widget thumb(int i) => MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () {
+              pausedUntil = DateTime.now().add(const Duration(seconds: 12));
+              _select(i);
+            },
+            child: Tooltip(
+              message: slides[i].name(ar),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutBack,
+                width: 58,
+                height: 58,
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: slide == i ? KColors.ink : Colors.transparent, width: 2)),
+                transform: Matrix4.identity()..scaleByDouble(slide == i ? 1.1 : 1.0, slide == i ? 1.1 : 1.0, 1.0, 1.0),
+                transformAlignment: Alignment.center,
+                child: ClipOval(child: Image.asset(slides[i].image!, fit: BoxFit.cover, alignment: Alignment.topCenter, cacheWidth: 140)),
               ),
-              PositionedDirectional(
-                bottom: 16,
-                start: 16,
-                end: 16,
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () => Go.product(heroProduct.id),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.9), borderRadius: BorderRadius.circular(18)),
-                      child: Row(children: [
-                        Expanded(child: Text(heroProduct.name(ar), style: KText.body(ar, 14.5, w: FontWeight.w800), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                        Text(money0(heroProduct.price), style: KText.body(ar, 14.5, w: FontWeight.w800)),
-                        const SizedBox(width: 10),
-                        Icon(ar ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded, size: 18),
-                      ]),
+            ),
+          ),
+        );
+
+    final visual = Column(children: [
+      MouseRegion(
+        onEnter: (_) => hovering = true,
+        onExit: (_) => hovering = false,
+        child: AspectRatio(
+          aspectRatio: mobile ? 0.95 : 0.92,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              color: Color.lerp(KColors.bg, accent, 0.28),
+              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.30), blurRadius: 60, offset: const Offset(0, 30))],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Stack(fit: StackFit.expand, children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 900),
+                  child: _HeroPhoto(key: ValueKey(slide), product: cur),
+                ),
+                const IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.center, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x55000000)])),
+                  ),
+                ),
+                PositionedDirectional(
+                  top: 18,
+                  start: 20,
+                  child: Badge3('${(slide + 1).toString().padLeft(2, '0')} / ${slides.length.toString().padLeft(2, '0')}', color: Colors.white.withValues(alpha: 0.88), fg: KColors.ink),
+                ),
+                PositionedDirectional(
+                  bottom: 16,
+                  start: 16,
+                  end: 16,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => Go.product(cur.id),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.92), borderRadius: BorderRadius.circular(18)),
+                        child: Row(children: [
+                          Expanded(child: Text(cur.name(ar), style: KText.body(ar, 14.5, w: FontWeight.w800), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                          Text(money0(cur.price), style: KText.body(ar, 14.5, w: FontWeight.w800)),
+                          const SizedBox(width: 10),
+                          Icon(ar ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded, size: 18),
+                        ]),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
           ),
         ),
       ),
       const SizedBox(height: 22),
-      Text('${context.t('liveColor')}: ${colors[heroColor].en == '' ? '' : (ar ? colors[heroColor].ar : colors[heroColor].en)}', style: KText.body(ar, 14, w: FontWeight.w700)),
-      const SizedBox(height: 4),
-      Text(context.t('heroColor'), style: KText.body(ar, 12.5, color: KColors.muted)),
-      const SizedBox(height: 14),
-      _Swatches(
-        colors: colors,
-        selected: heroColor,
-        onSelect: (i) {
-          setState(() => heroColor = i);
-          context.appRead.setAccent(colors[i].color);
-        },
-      ),
+      Text(context.t('heroPick'), style: KText.body(ar, 12.5, color: KColors.muted)),
+      const SizedBox(height: 12),
+      Wrap(spacing: 14, runSpacing: 12, alignment: WrapAlignment.center, children: [for (var i = 0; i < slides.length; i++) thumb(i)]),
     ]);
 
     return Constrained(
       padding: EdgeInsets.fromLTRB(Bp.pad(context), mobile ? 28 : 56, Bp.pad(context), 0),
       child: mobile
-          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [text, const SizedBox(height: 36), viewer])
+          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [text, const SizedBox(height: 36), visual])
           : Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Expanded(flex: 11, child: text),
               const SizedBox(width: 56),
-              Expanded(flex: 10, child: viewer),
+              Expanded(flex: 10, child: visual),
             ]),
     );
   }
@@ -204,39 +255,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------------------- 3D feature
-  Widget _featured3d(BuildContext context, bool mobile, bool ar) {
+  // ------------------------------------------------------- featured piece
+  Widget _featured(BuildContext context, bool mobile, bool ar) {
     final p = featProduct;
-    final col = p.colors[featColor];
     final left = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(ar ? 'تجربة ثلاثية الأبعاد' : 'IN THE ROUND', style: KText.label(ar, color: Colors.white.withValues(alpha: 0.6), size: 12.5)),
+      Text(context.t('editorsPick'), style: KText.label(ar, color: Colors.white.withValues(alpha: 0.6), size: 12.5)),
       const SizedBox(height: 14),
       Text(p.name(ar), style: KText.display(ar, mobile ? 34 : 54, color: Colors.white, h: 1.05)),
       const SizedBox(height: 16),
       ConstrainedBox(constraints: const BoxConstraints(maxWidth: 460), child: Text(p.desc(ar), style: KText.body(ar, 16, color: Colors.white.withValues(alpha: 0.75)))),
-      const SizedBox(height: 26),
-      Text('${context.t('liveColor')}: ${ar ? col.ar : col.en}', style: KText.body(ar, 14, w: FontWeight.w700, color: Colors.white)),
-      const SizedBox(height: 14),
-      _Swatches(
-        colors: p.colors,
-        selected: featColor,
-        onDark: true,
-        onSelect: (i) {
-          setState(() => featColor = i);
-          context.appRead.setAccent(p.colors[i].color);
-        },
-      ),
+      const SizedBox(height: 22),
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        Stars(p.rating, size: 16),
+        const SizedBox(width: 8),
+        Text('${p.rating} · ${p.reviews} ${context.t('reviews')}', style: KText.body(ar, 13.5, color: Colors.white.withValues(alpha: 0.7))),
+      ]),
+      const SizedBox(height: 10),
+      Text(p.fabric(ar), style: KText.body(ar, 12.5, color: Colors.white.withValues(alpha: 0.5))),
       const SizedBox(height: 28),
       KButton(label: '${context.t('viewDetails')}  ·  ${money0(p.price)}', dark: true, onTap: () => Go.product(p.id)),
     ]);
     final right = AspectRatio(
       aspectRatio: 1,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          gradient: RadialGradient(radius: 0.9, colors: [Color.lerp(const Color(0xFF2A2825), col.color, 0.45)!, const Color(0xFF1B1A17)]),
-        ),
-        child: ClipRRect(borderRadius: BorderRadius.circular(32), child: Viewer3D(key: const ValueKey('feat-viewer'), style: p.style, color: col.color)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(32),
+        child: ProductImage(p, alignment: Alignment.center),
       ),
     );
     return Constrained(
@@ -289,14 +332,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final ar = context.isAr;
     final q = ar
         ? [
-            ('ليلى م.', 'السويتر الأرضي صار قطعتي الأولى بالشتا. والعارض الثلاثي الأبعاد خلاني أعرف اللون بالضبط قبل الشراء.'),
+            ('ليلى م.', 'السويتر الأرضي صار قطعتي الأولى بالشتا. والصور طلعت مطابقة للون الحقيقي بالضبط.'),
             ('عمر ك.', 'التيشيرت الأسود قماشه ثقيل ومظبوط. والإرجاع كان سهل بدون أي أسئلة.'),
-            ('صوفيا ر.', 'التغليف جميل والمقاس طلع مظبوط. أحب إنو الموقع كله يتغيّر مع كل لون!'),
+            ('صوفيا ر.', 'التغليف جميل والمقاس طلع مظبوط. أحب إنو الموقع كله يتغيّر لونه مع كل قطعة!'),
           ]
         : [
-            ('Layla M.', 'The terracotta sweater is my go-to this winter. Seeing it in 3D told me the exact colour before I bought.'),
+            ('Layla M.', 'The terracotta sweater is my go-to this winter. The photos matched the real colour exactly.'),
             ('Omar K.', 'The black tee is properly heavyweight and fits right. Returns were painless, no questions asked.'),
-            ('Sofia R.', 'Lovely packaging, true to size. I adore that the whole site changes colour with every swatch!'),
+            ('Sofia R.', 'Lovely packaging, true to size. I adore that the whole site changes colour with every piece!'),
           ];
     Widget card((String, String) t) => Container(
           padding: const EdgeInsets.all(26),
@@ -328,38 +371,20 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 // ------------------------------------------------------------------ pieces
-class _Swatches extends StatelessWidget {
-  final List<ColorOpt> colors;
-  final int selected;
-  final ValueChanged<int> onSelect;
-  final bool onDark;
-  const _Swatches({required this.colors, required this.selected, required this.onSelect, this.onDark = false});
+/// One hero slide: the product photo with a slow "push-in" so the page feels alive.
+class _HeroPhoto extends StatelessWidget {
+  final Product product;
+  const _HeroPhoto({super.key, required this.product});
+
   @override
   Widget build(BuildContext context) {
-    final ar = context.isAr;
-    return Wrap(spacing: 12, runSpacing: 12, children: [
-      for (var i = 0; i < colors.length; i++)
-        Tooltip(
-          message: ar ? colors[i].ar : colors[i].en,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => onSelect(i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 260),
-                curve: Curves.easeOutBack,
-                width: 38,
-                height: 38,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: selected == i ? (onDark ? Colors.white : KColors.ink) : Colors.transparent, width: 2)),
-                transform: Matrix4.identity()..scaleByDouble(selected == i ? 1.12 : 1.0, selected == i ? 1.12 : 1.0, 1.0, 1.0),
-                transformAlignment: Alignment.center,
-                child: Container(decoration: BoxDecoration(color: colors[i].color, shape: BoxShape.circle, border: Border.all(color: Colors.black.withValues(alpha: 0.12)))),
-              ),
-            ),
-          ),
-        ),
-    ]);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1.0, end: 1.08),
+      duration: const Duration(seconds: 7),
+      curve: Curves.easeOut,
+      builder: (context, s, child) => Transform.scale(scale: s, child: child),
+      child: SizedBox.expand(child: ProductImage(product, alignment: Alignment.topCenter)),
+    );
   }
 }
 
@@ -422,18 +447,52 @@ class _Marquee extends StatefulWidget {
 class _MarqueeState extends State<_Marquee> with SingleTickerProviderStateMixin {
   final ScrollController sc = ScrollController();
   late final Ticker t;
+  ScrollPosition? _pageScroll;
+  double _viewH = 900;
+  double _offset = 0;
+  Duration _last = Duration.zero;
+
   @override
   void initState() {
     super.initState();
     t = createTicker((elapsed) {
-      if (sc.hasClients && sc.position.hasContentDimensions) {
-        sc.jumpTo(elapsed.inMicroseconds / 1e6 * 42);
-      }
-    })..start();
+      final dt = ((elapsed - _last).inMicroseconds / 1e6).clamp(0.0, 0.05);
+      _last = elapsed;
+      if (!sc.hasClients || !sc.position.hasContentDimensions) return;
+      _offset += dt * 42;
+      sc.jumpTo(_offset);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkVisible());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _viewH = MediaQuery.sizeOf(context).height;
+    _pageScroll?.removeListener(_checkVisible);
+    _pageScroll = Scrollable.maybeOf(context)?.position;
+    _pageScroll?.addListener(_checkVisible);
+  }
+
+  /// The strip only animates while it is actually on screen, so it costs
+  /// nothing the rest of the time.
+  void _checkVisible() {
+    if (!mounted) return;
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.attached || !box.hasSize) return;
+    final y = box.localToGlobal(Offset.zero).dy;
+    final visible = y < _viewH && y + box.size.height > 0;
+    if (visible && !t.isActive) {
+      _last = Duration.zero;
+      t.start();
+    } else if (!visible && t.isActive) {
+      t.stop();
+    }
   }
 
   @override
   void dispose() {
+    _pageScroll?.removeListener(_checkVisible);
     t.dispose();
     sc.dispose();
     super.dispose();
@@ -443,8 +502,8 @@ class _MarqueeState extends State<_Marquee> with SingleTickerProviderStateMixin 
   Widget build(BuildContext context) {
     final ar = context.isAr;
     final words = ar
-        ? ['شحن مجاني فوق ١٢٠\$', 'إرجاع خلال ٣٠ يوماً', 'قطن عضوي وصوف ميرينو', 'عارض ثلاثي الأبعاد', 'دفع آمن بفيزا وماستركارد']
-        : ['FREE SHIPPING OVER \$120', '30-DAY RETURNS', 'ORGANIC COTTON & MERINO', 'TRY IT IN 3D', 'SECURE VISA & MASTERCARD CHECKOUT'];
+        ? ['شحن مجاني فوق ١٢٠ يورو', 'إرجاع خلال ٣٠ يوماً', 'قطن عضوي وصوف ميرينو', 'إصدارات جديدة كل أسبوع', 'دفع آمن بفيزا وماستركارد']
+        : ['FREE SHIPPING OVER €120', '30-DAY RETURNS', 'ORGANIC COTTON & MERINO', 'NEW DROPS EVERY WEEK', 'SECURE VISA & MASTERCARD CHECKOUT'];
     return Container(
       height: 54,
       color: KColors.ink,

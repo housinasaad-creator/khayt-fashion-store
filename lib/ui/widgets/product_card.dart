@@ -92,7 +92,6 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _front(BuildContext context, bool ar) {
-    final accent = context.app.accent;
     return GestureDetector(
       onTap: () => Go.product(p.id),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -116,7 +115,6 @@ class _ProductCardState extends State<ProductCard> {
               child: Wrap(spacing: 6, children: [
                 if (p.isNew) Badge3(context.t('newBadge'), color: Colors.white, fg: KColors.ink),
                 if (p.onSale) Badge3(context.t('sale'), color: KColors.danger),
-                if (p.is3d) Badge3(context.t('badge3d'), color: accent),
               ]),
             ),
             PositionedDirectional(

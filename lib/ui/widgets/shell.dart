@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_state.dart';
 import '../../core/nav.dart';
-import '../../core/scroll.dart';
 import '../../core/strings.dart';
 import '../theme.dart';
 import 'card_marks.dart';
@@ -227,8 +226,7 @@ class MobileMenu extends StatelessWidget {
   }
 }
 
-/// Scrolling page content + footer. Registers its controller so the 3D
-/// viewer can forward mouse-wheel scrolling.
+/// Scrolling page content + footer.
 class PageBody extends StatefulWidget {
   final List<Widget> children;
   final bool footer;
@@ -242,14 +240,12 @@ class _PageBodyState extends State<PageBody> {
 
   @override
   void dispose() {
-    if (identical(activePageScroll, sc)) activePageScroll = null;
     sc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (ModalRoute.of(context)?.isCurrent ?? true) activePageScroll = sc;
     return Scrollbar(
       controller: sc,
       child: SingleChildScrollView(

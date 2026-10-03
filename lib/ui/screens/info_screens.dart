@@ -138,7 +138,7 @@ class _AboutScreenState extends State<AboutScreen> {
     final stats = [
       ('2,400+', ar ? 'تقييم خيالي' : 'imaginary reviews'),
       ('30', ar ? 'يوم إرجاع' : 'day returns'),
-      ('9', ar ? 'ألوان تريكو' : 'knit colours'),
+      ('23', ar ? 'قطعة في المجموعة' : 'pieces in the collection'),
       ('0', ar ? 'طلبات حقيقية' : 'real orders'),
     ];
     final text = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

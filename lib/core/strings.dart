@@ -18,23 +18,22 @@ const Map<String, List<String>> _s = {
   'brandName': ['Khayt', 'خيط'],
   'brandTag': ['Fashion Atelier', 'أتيليه الأزياء'],
   'announce': [
-    'Free shipping over \$120  ·  Fictional demo store, no real orders or payments',
-    'شحن مجاني فوق ١٢٠\$  ·  متجر وهمي للعرض فقط، بدون طلبات أو مدفوعات حقيقية'
+    'Free shipping over €120  ·  Fictional demo store, no real orders or payments',
+    'شحن مجاني فوق ١٢٠ يورو  ·  متجر وهمي للعرض فقط، بدون طلبات أو مدفوعات حقيقية'
   ],
   // hero
   'heroEyebrow': ['AUTUMN / WINTER 2026', 'خريف / شتاء ٢٠٢٦'],
   'heroTitle1': ['Knit for the way', 'حياكة تناسب'],
   'heroTitle2': ['you move.', 'حركتك.'],
   'heroSub': [
-    'Soft knits, honest fabrics and silhouettes made to last. Turn the sweater, pick a colour, and watch the whole store change with it.',
-    'حياكة ناعمة وأقمشة صادقة وقصّات تدوم. دوّر السويتر، اختر لوناً، وشاهد المتجر كله يتغيّر معه.'
+    'Soft knits, honest fabrics and silhouettes made to last. Pick a piece and watch the whole store take its colour.',
+    'حياكة ناعمة وأقمشة صادقة وقصّات تدوم. اختر قطعة وشاهد المتجر كله يأخذ لونها.'
   ],
   'shopNow': ['Shop the collection', 'تسوّق المجموعة'],
-  'tryIn3d': ['Try it in 3D', 'جرّبه بالـ 3D'],
-  'heroColor': ['Pick a colour. The whole store follows.', 'اختر لوناً. والمتجر كله يتبعك.'],
-  'drag3d': ['Drag to rotate', 'اسحب للتدوير'],
+  'exploreKnit': ['Explore knitwear', 'استكشف التريكو'],
+  'heroPick': ['Tap a piece. The whole store follows its colour.', 'اختر قطعة. والمتجر كله يتبع لونها.'],
+  'editorsPick': ['EDITOR\'S PICK', 'اختيار المحرر'],
   'viewDetails': ['View details', 'عرض التفاصيل'],
-  'liveColor': ['Colour', 'اللون'],
   // sections
   'railTitle': ['The Rail', 'الشماعة'],
   'railSub': [
@@ -93,23 +92,21 @@ const Map<String, List<String>> _s = {
   'details': ['Details', 'التفاصيل'],
   'fabricCare': ['Fabric & care', 'القماش والعناية'],
   'shipReturnText': [
-    'Free standard shipping on orders over \$120. Free returns within 30 days of delivery.',
-    'شحن عادي مجاني للطلبات فوق ١٢٠\$. إرجاع مجاني خلال ٣٠ يوماً من التسليم.'
+    'Free standard shipping on orders over €120. Free returns within 30 days of delivery.',
+    'شحن عادي مجاني للطلبات فوق ١٢٠ يورو. إرجاع مجاني خلال ٣٠ يوماً من التسليم.'
   ],
   'reviews': ['reviews', 'تقييم'],
   'inStock': ['In stock', 'متوفر'],
   'sale': ['Sale', 'تخفيض'],
   'newBadge': ['New', 'جديد'],
-  'badge3d': ['3D', '3D'],
   'youMayLike': ['You may also like', 'قد يعجبك أيضاً'],
   'selectSize': ['Please choose a size', 'الرجاء اختيار المقاس'],
   'addedToBag': ['Added to your bag', 'تمت الإضافة للسلة'],
-  'dragHint': ['Drag to rotate  ·  Pick a colour', 'اسحب للتدوير  ·  اختر لوناً'],
   'zoomHint': ['Move over the photo to zoom', 'حرّك المؤشر فوق الصورة للتكبير'],
   'detailView': ['Detail', 'تفصيل'],
   'flip': ['Details', 'التفاصيل'],
   'quickAdd': ['Quick add', 'إضافة سريعة'],
-  'freeShipOver': ['Free shipping over \$120', 'شحن مجاني فوق ١٢٠\$'],
+  'freeShipOver': ['Free shipping over €120', 'شحن مجاني فوق ١٢٠ يورو'],
   // cart
   'yourBag': ['Your bag', 'سلتك'],
   'viewFullBag': ['View full bag', 'عرض السلة كاملة'],
@@ -119,7 +116,7 @@ const Map<String, List<String>> _s = {
   'discount': ['Discount', 'الخصم'],
   'shippingLabel': ['Shipping', 'الشحن'],
   'free': ['Free', 'مجاني'],
-  'tax': ['Estimated tax', 'الضريبة التقديرية'],
+  'tax': ['Includes VAT (19%)', 'تشمل ضريبة القيمة المضافة (١٩٪)'],
   'total': ['Total', 'الإجمالي'],
   'promoCode': ['Promo code', 'رمز الخصم'],
   'apply': ['Apply', 'تطبيق'],
@@ -128,7 +125,7 @@ const Map<String, List<String>> _s = {
   'checkout': ['Checkout', 'إتمام الشراء'],
   'continueShopping': ['Continue shopping', 'متابعة التسوّق'],
   'remove': ['Remove', 'إزالة'],
-  'freeShipLeft': ['Add \$X more for free shipping', 'أضف X\$ للحصول على شحن مجاني'],
+  'freeShipLeft': ['Add €X more for free shipping', 'أضف X يورو للحصول على شحن مجاني'],
   'freeShipDone': ['You have free shipping!', 'حصلت على شحن مجاني!'],
   'item': ['item', 'قطعة'],
   'items': ['items', 'قطع'],
@@ -187,8 +184,8 @@ const Map<String, List<String>> _s = {
   'noOrder': ['No recent order to show.', 'لا يوجد طلب حديث للعرض.'],
   // footer
   'footerAbout': [
-    'Khayt (Arabic for "thread") is a fictional fashion atelier created as a Flutter portfolio project: cart, card checkout and a 3D knitwear viewer.',
-    'خيط أتيليه أزياء وهمي أُنشئ كمشروع لعرض الأعمال بـ Flutter: سلة وشراء ببطاقة وعارض ثلاثي الأبعاد للتريكو.'
+    'Khayt (Arabic for "thread") is a fictional fashion atelier created as a Flutter portfolio project: cart, card checkout and a colour-reactive storefront.',
+    'خيط أتيليه أزياء وهمي أُنشئ كمشروع لعرض الأعمال بـ Flutter: سلة وشراء ببطاقة وواجهة يتغيّر لونها مع كل قطعة.'
   ],
   'helpCol': ['Help', 'مساعدة'],
   'companyCol': ['Company', 'الشركة'],

@@ -10,7 +10,6 @@ import '../widgets/fly_to_cart.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/product_visual.dart';
 import '../widgets/shell.dart';
-import '../widgets/viewer3d.dart';
 
 class ProductScreen extends StatefulWidget {
   final String id;
@@ -41,9 +40,8 @@ class _ProductScreenState extends State<ProductScreen> {
     final pr = p;
     if (pr != null) {
       if (pr.sizes.length == 1) size = pr.sizes.first;
-      if (pr.is3d) colorIdx = pr.id == 'heritage-crew' ? 1 : 3;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.appRead.setAccent(pr.is3d ? pr.colors[colorIdx].color : pr.accent);
+        if (mounted) context.appRead.setAccent(pr.accent);
       });
     }
   }
@@ -89,7 +87,7 @@ class _ProductScreenState extends State<ProductScreen> {
     final colorName = pr.colors.isEmpty ? null : (ar ? pr.colors[colorIdx].ar : pr.colors[colorIdx].en);
     final related = kProducts.where((x) => x.id != pr.id && x.cats.any(pr.cats.contains)).take(4).toList();
 
-    final galleryW = pr.is3d ? _viewer(context, pr, accent) : _photo(context, pr);
+    final galleryW = _photo(context, pr);
     final info = _info(context, pr, ar, mobile, accent, colorName);
 
     return PageBody(children: [
@@ -114,38 +112,6 @@ class _ProductScreenState extends State<ProductScreen> {
           const SizedBox(height: 26),
           ProductGrid(related, maxCols: 4),
         ]),
-      ),
-    ]);
-  }
-
-  // ----------------------------------------------------------- 3D viewer
-  Widget _viewer(BuildContext context, Product pr, Color accent) {
-    final ar = context.isAr;
-    final col = pr.colors[colorIdx];
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          key: galleryKey,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(36),
-            gradient: RadialGradient(center: const Alignment(0, -0.1), radius: 0.95, colors: [Color.lerp(Colors.white, col.color, 0.30)!, Color.lerp(KColors.bg, col.color, 0.30)!]),
-            boxShadow: [BoxShadow(color: col.color.withValues(alpha: 0.30), blurRadius: 50, offset: const Offset(0, 24))],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(36),
-            child: Stack(fit: StackFit.expand, children: [
-              Viewer3D(key: ValueKey('pv-${pr.id}'), style: pr.style, color: col.color),
-              PositionedDirectional(top: 18, start: 18, child: Badge3('3D', color: accent)),
-              PositionedDirectional(
-                bottom: 16,
-                start: 0,
-                end: 0,
-                child: Center(child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.85), borderRadius: BorderRadius.circular(99)), child: Text(context.t('dragHint'), style: KText.body(ar, 12.5, w: FontWeight.w600)))),
-              ),
-            ]),
-          ),
-        ),
       ),
     ]);
   }

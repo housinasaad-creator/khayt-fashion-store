@@ -1,7 +1,7 @@
 # Khayt — خيط · Fashion Store (portfolio demo)
 
 A **fictional** fashion atelier built with **Flutter / Dart** to showcase front-end,
-animation and 3D skills. Nothing here is a real business: the brand, the people,
+animation and UI skills. Nothing here is a real business: the brand, the people,
 the reviews, the prices and the company details are invented, and **no real payment
 is ever processed**.
 
@@ -11,11 +11,9 @@ is ever processed**.
 
 ## Highlights
 
-- **3D knitwear viewer** — a procedurally-modelled knit sweater rendered with three.js
-  (no downloaded model, so no licensing issues). Drag to rotate, pick a colour and the
-  garment re-tints live. Embedded in Flutter web through an `<iframe>` + `postMessage`.
-- **A storefront that changes colour with the product** — choosing a swatch re-tints the
-  whole site (background, accents, buttons, shadows).
+- **A storefront that changes colour with the product** — the hero slideshow, the rail and
+  every product page re-tint the whole site (background, accents, buttons, shadows) to the
+  colour of the piece you are looking at.
 - **Hanger-rail carousel** — products hang on a rail and swing like real garments,
   driven by scroll/drag momentum (pendulum physics).
 - **Flip-card products** — pointer-following 3D tilt, and a hanging-tag flip that reveals
@@ -28,6 +26,8 @@ is ever processed**.
   Nothing leaves the page.
 - **Bilingual English / Arabic** with real RTL layout.
 - **Responsive** — phone, tablet and desktop layouts.
+- **Light on the browser** — photos only (no WebGL or 3D), and the animated strips pause
+  themselves when they are off screen or idle.
 - **Complete legal/info pages** — Privacy Policy, Terms of Service, Shipping & Returns,
   FAQ, About, Contact (all clearly marked as fictional).
 
@@ -42,8 +42,8 @@ Demo values for the checkout:
 | 3-D Secure code | any 6 digits |
 | Promo code | `KHAYT10` (10 % off) |
 
-Shipping is free over $120 (otherwise $9, express $14); estimated tax is 8 %.
-All prices are in USD.
+Shipping is free over €120 (otherwise €9, express €14).
+All prices are in euros and include VAT (19 %).
 
 ## Run the pre-built site
 
@@ -69,9 +69,8 @@ Notes:
   (this folder name does — the Flutter icon-font step fails on such paths otherwise).
 - `flutter analyze` can also crash on non-ASCII paths; analyse from an ASCII-path copy.
 - To host under a sub-path (e.g. GitHub Pages `/khayt/`), add `--base-href /khayt/`.
-- The 3D viewer is a web feature. On Android/iOS the code compiles with a placeholder
-  (`lib/ui/widgets/viewer3d_stub.dart`) — a native 3D view would be the next step if this
-  becomes a real mobile app.
+- There are no web-only plugins, so the same code can also be built for Android/iOS
+  (mobile builds have not been tested yet).
 
 ## Structure
 
@@ -81,16 +80,14 @@ lib/
   core/                     state (cart, accent colour, language), strings (EN/AR), navigation
   data/                     products, legal & info copy
   ui/theme.dart             colours, type, theme
-  ui/widgets/               shell, hanger rail, product card, cart, fly-to-bag, 3D viewer bridge
+  ui/widgets/               shell, hanger rail, product card, cart, fly-to-bag
   ui/screens/               home, shop, product, cart, checkout, order, info pages
 assets/
-  viewer/                   three.js sweater viewer (viewer.html + local three.js r160)
   images/products/          product photos
 ```
 
 ## Credits & licences
 
 - Product photographs are from [Unsplash](https://unsplash.com) (used under the Unsplash licence).
-- [three.js](https://threejs.org) — MIT.
 - Fonts via `google_fonts`: Playfair Display, Inter, Cairo (SIL Open Font Licence).
 - Flutter — BSD-3-Clause.
