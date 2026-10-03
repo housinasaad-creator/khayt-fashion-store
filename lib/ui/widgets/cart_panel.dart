@@ -226,7 +226,6 @@ class _LineTile extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         IconButton(
-          tooltip: context.t('remove'),
           visualDensity: VisualDensity.compact,
           onPressed: () => context.appRead.remove(line),
           icon: const Icon(Icons.close_rounded, size: 18, color: KColors.muted),

@@ -8,12 +8,35 @@ import 'cart_panel.dart';
 import 'logo.dart';
 
 /// Persistent frame around the Navigator: announcement bar, header, drawers.
-class ShellLayout extends StatelessWidget {
+///
+/// The frame sits above the Navigator, so it gets an [Overlay] of its own;
+/// tooltips, text-selection menus and similar widgets in the header and the
+/// drawers need one, and without it they fail and paint a grey error box.
+class ShellLayout extends StatefulWidget {
   final Widget child;
   const ShellLayout({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  State<ShellLayout> createState() => _ShellLayoutState();
+}
+
+class _ShellLayoutState extends State<ShellLayout> {
+  late final OverlayEntry _entry = OverlayEntry(builder: _frame);
+
+  @override
+  void didUpdateWidget(covariant ShellLayout oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _entry.markNeedsBuild();
+  }
+
+  @override
+  void dispose() {
+    _entry.remove();
+    _entry.dispose();
+    super.dispose();
+  }
+
+  Widget _frame(BuildContext context) {
     final app = context.app;
     final tint = Color.lerp(KColors.bg, app.accent, 0.16)!;
     final w = MediaQuery.sizeOf(context).width;
@@ -34,11 +57,14 @@ class ShellLayout extends StatelessWidget {
         body: Column(children: [
           const AnnouncementBar(),
           const SiteHeader(),
-          Expanded(child: child),
+          Expanded(child: widget.child),
         ]),
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) => Overlay(initialEntries: [_entry]);
 }
 
 class AnnouncementBar extends StatelessWidget {
@@ -117,7 +143,6 @@ class SiteHeader extends StatelessWidget {
           return Row(children: [
             if (!wide)
               IconButton(
-                tooltip: context.t('menu'),
                 onPressed: () => shellKey.currentState?.openDrawer(),
                 icon: const Icon(Icons.menu_rounded, color: KColors.ink),
               ),
@@ -164,8 +189,10 @@ class _CartButton extends StatelessWidget {
       duration: const Duration(milliseconds: 520),
       curve: Curves.elasticOut,
       builder: (context, s, child) => Transform.scale(scale: s, child: child),
-      child: Tooltip(
-        message: context.t('bag'),
+      // no Tooltip here: the header lives above the Navigator, so there is no Overlay for it
+      child: Semantics(
+        label: context.t('bag'),
+        button: true,
         child: InkWell(
           borderRadius: BorderRadius.circular(999),
           onTap: Go.openCart,
