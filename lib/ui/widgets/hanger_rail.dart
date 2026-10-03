@@ -106,7 +106,7 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
               height: 7,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                gradient: const LinearGradient(colors: [Color(0xFF6E6759), Color(0xFFB9B1A1), Color(0xFF6E6759)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+                color: const Color(0xFF9A927F),
                 boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 6, offset: const Offset(0, 4))],
               ),
             ),
@@ -129,7 +129,7 @@ class _HangerRailState extends State<HangerRail> with SingleTickerProviderStateM
         Padding(
           padding: EdgeInsets.symmetric(horizontal: Bp.pad(context)),
           child: Row(children: [
-            Text(context.t('drag3d'), style: KText.body(context.isAr, 13, color: KColors.muted)),
+            Text(context.t('dragRail'), style: KText.body(context.isAr, 13, color: KColors.muted)),
             const Spacer(),
             _Arrow(Icons.arrow_back_rounded, () => _nudge(context.isAr ? 1 : -1)),
             const SizedBox(width: 10),

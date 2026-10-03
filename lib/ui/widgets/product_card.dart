@@ -9,7 +9,7 @@ import 'common.dart';
 import 'fly_to_cart.dart';
 import 'product_visual.dart';
 
-/// Product card with pointer-follow 3D tilt, a hanging-tag flip to the back
+/// Product card with pointer-follow tilt, a hanging-tag flip to the back
 /// (details + size picker + quick add) and a fly-to-bag animation.
 class ProductCard extends StatefulWidget {
   final Product product;

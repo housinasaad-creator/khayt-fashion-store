@@ -177,11 +177,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   duration: const Duration(milliseconds: 900),
                   child: _HeroPhoto(key: ValueKey(slide), product: cur),
                 ),
-                const IgnorePointer(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.center, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x55000000)])),
-                  ),
-                ),
                 PositionedDirectional(
                   top: 18,
                   start: 20,
@@ -322,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 28),
         mobile
             ? Column(children: [for (final it in items) Padding(padding: const EdgeInsets.only(bottom: 14), child: card(it))])
-            : Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < items.length; i++) ...[if (i > 0) const SizedBox(width: 20), Expanded(child: card(items[i]))]]),
+            : IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < items.length; i++) ...[if (i > 0) const SizedBox(width: 20), Expanded(child: card(items[i]))]])),
       ]),
     );
   }
@@ -353,8 +348,6 @@ class _HomeScreenState extends State<HomeScreen> {
               CircleAvatar(radius: 16, backgroundColor: context.app.accent.withValues(alpha: 0.2), child: Text(t.$1.characters.first, style: KText.body(ar, 14, w: FontWeight.w800))),
               const SizedBox(width: 10),
               Text(t.$1, style: KText.body(ar, 14, w: FontWeight.w700)),
-              const SizedBox(width: 8),
-              Text(ar ? '· زبون خيالي' : '· imaginary customer', style: KText.body(ar, 12.5, color: KColors.muted)),
             ]),
           ]),
         );
@@ -364,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 28),
         mobile
             ? Column(children: [for (final t in q) Padding(padding: const EdgeInsets.only(bottom: 14), child: card(t))])
-            : Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < q.length; i++) ...[if (i > 0) const SizedBox(width: 20), Expanded(child: card(q[i]))]]),
+            : IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [for (var i = 0; i < q.length; i++) ...[if (i > 0) const SizedBox(width: 20), Expanded(child: card(q[i]))]])),
       ]),
     );
   }
@@ -413,7 +406,8 @@ class _CatTileState extends State<_CatTile> {
           borderRadius: BorderRadius.circular(24),
           child: Stack(fit: StackFit.expand, children: [
             AnimatedScale(scale: hover ? 1.08 : 1.0, duration: const Duration(milliseconds: 700), curve: Curves.easeOutCubic, child: Image.asset(widget.image, fit: BoxFit.cover, alignment: widget.align)),
-            DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withValues(alpha: hover ? 0.72 : 0.55)]))),
+            const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x8C000000)]))),
+            AnimatedContainer(duration: const Duration(milliseconds: 300), color: Colors.black.withValues(alpha: hover ? 0.18 : 0)),
             Padding(
               padding: EdgeInsets.all(Bp.mobile(context) ? 14 : 20),
               child: Column(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -580,7 +574,7 @@ class _NewsletterState extends State<_Newsletter> {
         padding: EdgeInsets.all(mobile ? 26 : 52),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
-          gradient: LinearGradient(colors: [Color.lerp(KColors.ink, accent, 0.35)!, KColors.ink], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          color: Color.lerp(KColors.ink, accent, 0.28),
         ),
         child: mobile
             ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [left, const SizedBox(height: 22), field])

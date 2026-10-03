@@ -45,16 +45,6 @@ class _LegalScreenState extends State<LegalScreen> {
           FadeSlideIn(child: Text(context.t(widget.titleKey), style: KText.display(ar, mobile ? 36 : 58))),
           const SizedBox(height: 10),
           if (widget.showUpdated) Text(context.t('lastUpdated'), style: KText.body(ar, 14, color: KColors.muted)),
-          const SizedBox(height: 22),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFFFFF3D6), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE9C46A))),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Icon(Icons.info_outline_rounded, color: Color(0xFF8A5A00)),
-              const SizedBox(width: 12),
-              Expanded(child: Text(context.t('fictionalNotice'), style: KText.body(ar, 13.5, color: const Color(0xFF5E3D00), w: FontWeight.w600))),
-            ]),
-          ),
           const SizedBox(height: 34),
           for (final s in secs) ...[
             Text(s.h, style: KText.display(ar, 24)),
@@ -136,10 +126,10 @@ class _AboutScreenState extends State<AboutScreen> {
     final story = ar ? aboutStoryAr : aboutStoryEn;
     final accent = context.app.accent;
     final stats = [
-      ('2,400+', ar ? 'تقييم خيالي' : 'imaginary reviews'),
+      ('2,400+', ar ? 'تقييم من زبائننا' : 'customer reviews'),
       ('30', ar ? 'يوم إرجاع' : 'day returns'),
       ('23', ar ? 'قطعة في المجموعة' : 'pieces in the collection'),
-      ('0', ar ? 'طلبات حقيقية' : 'real orders'),
+      ('4', ar ? 'مجموعات في السنة' : 'collections a year'),
     ];
     final text = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(ar ? context.t('about') : context.t('about').toUpperCase(), style: KText.label(ar, color: accent, size: 12.5)),

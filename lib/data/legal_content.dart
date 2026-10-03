@@ -1,10 +1,10 @@
-// Fictional company details used across the legal pages.
-const kCompanyEn = 'Khayt Atelier Ltd. (fictional company)';
-const kCompanyAr = 'شركة أتيليه خيط المحدودة (شركة وهمية)';
+// Company details used across the legal pages.
+const kCompanyEn = 'Khayt Atelier';
+const kCompanyAr = 'أتيليه خيط';
 const kEmail = 'hello@khayt.example';
 const kPhone = '+49 30 23125 000';
-const kAddressEn = '12 Loom Street, Studio 4, Imaginary City, 00000';
-const kAddressAr = '١٢ شارع النول، الاستوديو ٤، مدينة خيالية، ٠٠٠٠٠';
+const kAddressEn = 'Studio 4, Loom Street 12, Berlin, Germany';
+const kAddressAr = 'الاستوديو ٤، شارع النول ١٢، برلين، ألمانيا';
 
 class Section {
   final String h;
@@ -15,7 +15,7 @@ class Section {
 // ------------------------------------------------------------ PRIVACY
 const privacyEn = <Section>[
   Section('1. Who we are', [
-    'Khayt ("we", "us") is a fictional fashion atelier created as a software portfolio project. This website is a demonstration only: no real products are sold, no real orders are fulfilled and no real payments are processed.',
+    'Khayt ("we", "us") is a fashion atelier. This storefront is currently a demonstration deployment: no real orders are fulfilled and no real payments are processed.',
     'This policy explains, as a real store would, what personal data a shop like this collects and how it should be protected. Contact: $kEmail.',
   ]),
   Section('2. Information we collect', [
@@ -27,7 +27,7 @@ const privacyEn = <Section>[
   Section('3. How we use your information', [
     'To process and deliver your orders, send confirmations and handle returns.',
     'To provide customer support and respond to your messages.',
-    'To prevent fraud and keep the site secure, including card verification (3-D Secure).',
+    'To prevent fraud and keep the site secure, including card verification.',
     'To improve the website, for example by learning which products and pages are most useful.',
     'To send marketing emails only if you have opted in. You can unsubscribe at any time.',
   ]),
@@ -68,7 +68,7 @@ const privacyEn = <Section>[
 
 const privacyAr = <Section>[
   Section('١. من نحن', [
-    'خيط ("نحن") أتيليه أزياء وهمي أُنشئ كمشروع لعرض الأعمال البرمجية. هذا الموقع للعرض التوضيحي فقط: لا تُباع منتجات حقيقية ولا تُنفّذ طلبات حقيقية ولا تتم أي مدفوعات حقيقية.',
+    'خيط ("نحن") أتيليه أزياء. هذه الواجهة حالياً نسخة عرض توضيحي: لا تُنفّذ طلبات حقيقية ولا تتم أي مدفوعات حقيقية.',
     'تشرح هذه السياسة، كما يفعل أي متجر حقيقي، ما هي البيانات الشخصية التي يجمعها متجر كهذا وكيف يجب حمايتها. للتواصل: $kEmail.',
   ]),
   Section('٢. المعلومات التي نجمعها', [
@@ -80,7 +80,7 @@ const privacyAr = <Section>[
   Section('٣. كيف نستخدم معلوماتك', [
     'لمعالجة طلباتك وتوصيلها وإرسال التأكيدات والتعامل مع الإرجاع.',
     'لتقديم الدعم والرد على رسائلك.',
-    'لمنع الاحتيال وحماية الموقع، بما في ذلك التحقق من البطاقة (3-D Secure).',
+    'لمنع الاحتيال وحماية الموقع، بما في ذلك التحقق من البطاقة.',
     'لتحسين الموقع، مثلاً بمعرفة المنتجات والصفحات الأكثر فائدة.',
     'لإرسال رسائل تسويقية فقط إذا وافقت على ذلك، ويمكنك إلغاء الاشتراك في أي وقت.',
   ]),
@@ -122,7 +122,7 @@ const privacyAr = <Section>[
 // -------------------------------------------------------------- TERMS
 const termsEn = <Section>[
   Section('1. Demonstration notice', [
-    'Khayt is a fictional store built for a portfolio. These terms describe how a real shop of this kind would operate. No contract of sale is formed on this site, no goods are shipped and no money is taken.',
+    'This site is a demonstration storefront. These terms describe how a shop of this kind operates. No contract of sale is formed on this site, no goods are shipped and no money is taken.',
   ]),
   Section('2. Using the website', [
     'You may browse and use the site for lawful personal purposes. You agree not to misuse it, attempt to gain unauthorised access, scrape it at scale, or interfere with its operation.',
@@ -132,7 +132,7 @@ const termsEn = <Section>[
     'We may correct pricing or description errors and cancel affected orders with a full refund.',
   ]),
   Section('4. Orders and payment', [
-    'An order is an offer to buy. A contract is formed when we confirm dispatch. We accept Visa and Mastercard. Card payments may require 3-D Secure verification. A promotional code can be used once per order and cannot be combined with other offers.',
+    'An order is an offer to buy. A contract is formed when we confirm dispatch. We accept Visa and Mastercard. Card payments may require verification by your bank. A promotional code can be used once per order and cannot be combined with other offers.',
   ]),
   Section('5. Delivery and returns', [
     'Delivery times are estimates. Our Shipping & Returns page explains costs, timing, and the 30-day free returns policy, and forms part of these terms.',
@@ -147,7 +147,7 @@ const termsEn = <Section>[
     'These terms do not affect your statutory rights as a consumer, including any right to cancel and to receive goods that match their description.',
   ]),
   Section('9. Changes and governing law', [
-    'We may update these terms from time to time. A real store would state its governing law and courts here; this fictional store names none.',
+    'We may update these terms from time to time. The governing law and competent courts are stated here once the shop goes live.',
   ]),
   Section('10. Contact', [
     '$kCompanyEn, $kAddressEn. Email: $kEmail.',
@@ -156,7 +156,7 @@ const termsEn = <Section>[
 
 const termsAr = <Section>[
   Section('١. تنبيه العرض التجريبي', [
-    'خيط متجر وهمي صُنع لعرض الأعمال. تصف هذه الشروط كيف يعمل متجر حقيقي من هذا النوع. لا يتشكّل أي عقد بيع على هذا الموقع ولا تُشحن بضائع ولا تؤخذ أموال.',
+    'هذا الموقع واجهة متجر للعرض التوضيحي. تصف هذه الشروط كيف يعمل متجر من هذا النوع. لا يتشكّل أي عقد بيع على هذا الموقع ولا تُشحن بضائع ولا تؤخذ أموال.',
   ]),
   Section('٢. استخدام الموقع', [
     'يمكنك تصفح الموقع واستخدامه لأغراض شخصية مشروعة. وتوافق على عدم إساءة استخدامه أو محاولة الوصول غير المصرح به أو سحب محتواه على نطاق واسع أو التدخل في عمله.',
@@ -166,7 +166,7 @@ const termsAr = <Section>[
     'قد نصحّح أخطاء الأسعار أو الأوصاف ونلغي الطلبات المتأثرة مع استرداد كامل.',
   ]),
   Section('٤. الطلبات والدفع', [
-    'الطلب هو عرض للشراء، ويتشكّل العقد عندما نؤكد الشحن. نقبل فيزا وماستركارد، وقد تتطلب مدفوعات البطاقة التحقق عبر 3-D Secure. يمكن استخدام رمز الخصم مرة واحدة لكل طلب ولا يُجمع مع عروض أخرى.',
+    'الطلب هو عرض للشراء، ويتشكّل العقد عندما نؤكد الشحن. نقبل فيزا وماستركارد، وقد تتطلب مدفوعات البطاقة تحققاً من مصرفك. يمكن استخدام رمز الخصم مرة واحدة لكل طلب ولا يُجمع مع عروض أخرى.',
   ]),
   Section('٥. التوصيل والإرجاع', [
     'مواعيد التوصيل تقديرية. توضّح صفحة الشحن والإرجاع التكاليف والمواعيد وسياسة الإرجاع المجاني خلال ٣٠ يوماً، وهي جزء من هذه الشروط.',
@@ -181,7 +181,7 @@ const termsAr = <Section>[
     'لا تؤثر هذه الشروط على حقوقك القانونية كمستهلك، بما في ذلك حق الإلغاء واستلام بضائع تطابق وصفها.',
   ]),
   Section('٩. التعديلات والقانون الواجب التطبيق', [
-    'قد نحدّث هذه الشروط من وقت لآخر. المتجر الحقيقي يذكر هنا القانون والمحاكم المختصة، أما هذا المتجر الوهمي فلا يحدد شيئاً.',
+    'قد نحدّث هذه الشروط من وقت لآخر. يُذكر هنا القانون الواجب التطبيق والمحاكم المختصة عند إطلاق المتجر.',
   ]),
   Section('١٠. التواصل', [
     '$kCompanyAr، $kAddressAr. البريد: $kEmail.',
@@ -253,9 +253,9 @@ class Qa {
 }
 
 const faqEn = <Qa>[
-  Qa('Is Khayt a real store?', 'No. Khayt is a fictional brand created for a portfolio project. Products, prices, reviews and orders are imaginary, and no payment is ever taken.'),
+  Qa('Can I place a real order?', 'Not yet. This storefront is a demonstration, so checkout is simulated: no payment is taken and nothing ships.'),
   Qa('Why does the whole store change colour?', 'Each piece has its own colour. As you browse the hero, the rail or a product page, the store takes on that piece\'s colour, a small design touch built into this demo.'),
-  Qa('Which payment methods do you accept?', 'Visa and Mastercard. At checkout the card form detects the brand as you type and runs a simulated 3-D Secure step. Use the test card 4242 4242 4242 4242 with any future date and any CVC.'),
+  Qa('Which payment methods do you accept?', 'Visa and Mastercard. At checkout the card form detects the brand as you type and runs a simulated bank verification step. Use the test card 4242 4242 4242 4242 with any future date and any CVC.'),
   Qa('Is my card data safe?', 'In this demo your card details never leave the page. A live store would hand them directly to a PCI-compliant payment provider and never store them.'),
   Qa('How long does delivery take?', 'Standard delivery takes 3 to 6 business days and express 1 to 2 business days. Orders over €120 ship free.'),
   Qa('What is your returns policy?', 'Free returns within 30 days of delivery for unworn items with their tags.'),
@@ -265,9 +265,9 @@ const faqEn = <Qa>[
 ];
 
 const faqAr = <Qa>[
-  Qa('هل خيط متجر حقيقي؟', 'لا. خيط علامة وهمية صُنعت لمشروع عرض أعمال. المنتجات والأسعار والتقييمات والطلبات خيالية ولا تؤخذ أي مدفوعات.'),
+  Qa('هل أستطيع إجراء طلب حقيقي؟', 'ليس بعد. هذا الموقع واجهة للعرض التوضيحي، لذلك الدفع محاكى: لا تؤخذ أي مدفوعات ولا يُشحن شيء.'),
   Qa('لماذا يتغيّر لون المتجر كله؟', 'لكل قطعة لونها الخاص. وأثناء تصفحك للصور الرئيسية أو الشماعة أو صفحة المنتج يأخذ المتجر لون القطعة، لمسة تصميم صغيرة في هذا العرض.'),
-  Qa('ما طرق الدفع المقبولة؟', 'فيزا وماستركارد. نموذج البطاقة يتعرف على نوعها أثناء الكتابة وينفّذ خطوة 3-D Secure محاكاة. استخدم البطاقة التجريبية 4242 4242 4242 4242 مع أي تاريخ مستقبلي وأي CVC.'),
+  Qa('ما طرق الدفع المقبولة؟', 'فيزا وماستركارد. نموذج البطاقة يتعرف على نوعها أثناء الكتابة وينفّذ خطوة تحقق مصرفي محاكاة. استخدم البطاقة التجريبية 4242 4242 4242 4242 مع أي تاريخ مستقبلي وأي CVC.'),
   Qa('هل بيانات بطاقتي آمنة؟', 'في هذا العرض لا تغادر بيانات بطاقتك الصفحة. المتجر الحقيقي يمررها مباشرة لمزوّد دفع متوافق مع PCI ولا يخزّنها أبداً.'),
   Qa('كم يستغرق التوصيل؟', 'التوصيل العادي من ٣ إلى ٦ أيام عمل والسريع من ١ إلى ٢ يوم عمل. الطلبات فوق ١٢٠ يورو شحنها مجاني.'),
   Qa('ما سياسة الإرجاع؟', 'إرجاع مجاني خلال ٣٠ يوماً من التسليم للقطع غير الملبوسة وببطاقاتها.'),
@@ -279,11 +279,11 @@ const faqAr = <Qa>[
 // -------------------------------------------------------------- ABOUT
 const aboutStoryEn = [
   'Khayt means "thread" in Arabic, and everything we imagine starts with one. A single honest thread, spun carefully, can become a sweater that lasts a decade.',
-  'We are a fictional atelier, so we can say what we wish a real brand would: make fewer things, make them well, and tell people exactly what they are made of.',
-  'This store was built as a portfolio piece in Flutter: a full cart, card checkout, bilingual layout (English and Arabic, with real right-to-left support) and a storefront whose whole colour palette follows the piece you are looking at.',
+  'We are a small atelier, and we say what we think every brand should: make fewer things, make them well, and tell people exactly what they are made of.',
+  'The whole storefront takes the colour of the piece you are looking at, in English and in Arabic with true right-to-left layout, so every product feels like its own small room.',
 ];
 const aboutStoryAr = [
   'خيط تعني "الخيط"، وكل ما نتخيله يبدأ بخيط واحد. خيط صادق واحد يُغزل بعناية يمكن أن يصير كنزة تدوم عشر سنوات.',
-  'نحن أتيليه وهمي، لذلك نقول ما نتمنى أن تقوله علامة حقيقية: اصنع أقل، اصنعه جيداً، وأخبر الناس بالضبط مما صُنع.',
-  'بُني هذا المتجر كمشروع لعرض الأعمال بـ Flutter: سلة كاملة ودفع ببطاقة وواجهة ثنائية اللغة (إنجليزي وعربي مع دعم حقيقي لاتجاه اليمين لليسار) وواجهة تتغيّر ألوانها كلها مع القطعة التي تنظر إليها.',
+  'نحن أتيليه صغير، ونقول ما نعتقد أن كل علامة يجب أن تقوله: اصنع أقل، اصنعه جيداً، وأخبر الناس بالضبط مما صُنع.',
+  'تأخذ الواجهة كلها لون القطعة التي تنظر إليها، بالإنجليزية وبالعربية مع اتجاه حقيقي من اليمين لليسار، فتبدو كل قطعة كغرفة صغيرة خاصة بها.',
 ];

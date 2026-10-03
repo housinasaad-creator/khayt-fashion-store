@@ -16,17 +16,17 @@ is ever processed**.
   colour of the piece you are looking at.
 - **Hanger-rail carousel** — products hang on a rail and swing like real garments,
   driven by scroll/drag momentum (pendulum physics).
-- **Flip-card products** — pointer-following 3D tilt, and a hanging-tag flip that reveals
+- **Flip-card products** — pointer-following tilt, and a hanging-tag flip that reveals
   details and a size picker.
 - Fly-to-bag animation, photo zoom, kinetic hero text, marquee.
 - **Full shopping flow** — shop (filter / search / sort), product pages, bag drawer + bag page,
   promo code, shipping & tax maths, checkout, order confirmation.
 - **Simulated card payment** — Visa/Mastercard detection from the card number, Luhn check,
-  expiry/CVC validation, fake processing step and a fake 3-D Secure code step.
+  expiry/CVC validation, fake processing step and a fake bank-verification code step.
   Nothing leaves the page.
 - **Bilingual English / Arabic** with real RTL layout.
 - **Responsive** — phone, tablet and desktop layouts.
-- **Light on the browser** — photos only (no WebGL or 3D), and the animated strips pause
+- **Light on the browser** — photos only (no WebGL), and the animated strips pause
   themselves when they are off screen or idle.
 - **Complete legal/info pages** — Privacy Policy, Terms of Service, Shipping & Returns,
   FAQ, About, Contact (all clearly marked as fictional).
@@ -39,7 +39,7 @@ Demo values for the checkout:
 | --- | --- |
 | Test cards | Visa `4242 4242 4242 4242` · Mastercard `5555 5555 5555 4444` |
 | Expiry / CVC | any future date / any 3 digits |
-| 3-D Secure code | any 6 digits |
+| Bank verification code | any 6 digits |
 | Promo code | `KHAYT10` (10 % off) |
 
 Shipping is free over €120 (otherwise €9, express €14).

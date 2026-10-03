@@ -101,7 +101,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     await Future<void>.delayed(const Duration(milliseconds: 1500));
     if (!mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
-    // 2) fake 3-D Secure
+    // 2) fake bank verification
     final ok = await showDialog<bool>(context: context, barrierDismissible: false, builder: (_) => const _VerifyDialog());
     if (!mounted) return;
     if (ok != true) {

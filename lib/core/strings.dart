@@ -18,8 +18,8 @@ const Map<String, List<String>> _s = {
   'brandName': ['Khayt', 'خيط'],
   'brandTag': ['Fashion Atelier', 'أتيليه الأزياء'],
   'announce': [
-    'Free shipping over €120  ·  Fictional demo store, no real orders or payments',
-    'شحن مجاني فوق ١٢٠ يورو  ·  متجر وهمي للعرض فقط، بدون طلبات أو مدفوعات حقيقية'
+    'Free shipping over €120  ·  Free returns within 30 days',
+    'شحن مجاني فوق ١٢٠ يورو  ·  إرجاع مجاني خلال ٣٠ يوماً'
   ],
   // hero
   'heroEyebrow': ['AUTUMN / WINTER 2026', 'خريف / شتاء ٢٠٢٦'],
@@ -30,6 +30,7 @@ const Map<String, List<String>> _s = {
     'حياكة ناعمة وأقمشة صادقة وقصّات تدوم. اختر قطعة وشاهد المتجر كله يأخذ لونها.'
   ],
   'shopNow': ['Shop the collection', 'تسوّق المجموعة'],
+  'dragRail': ['Drag or scroll the rail', 'اسحب أو مرّر الشماعة'],
   'exploreKnit': ['Explore knitwear', 'استكشف التريكو'],
   'heroPick': ['Tap a piece. The whole store follows its colour.', 'اختر قطعة. والمتجر كله يتبع لونها.'],
   'editorsPick': ['EDITOR\'S PICK', 'اختيار المحرر'],
@@ -65,12 +66,21 @@ const Map<String, List<String>> _s = {
     'Wear it, test it, change your mind. Free returns on every order, no questions asked.',
     'البسها وجرّبها وغيّر رأيك. إرجاع مجاني على كل طلب بدون أسئلة.'
   ],
-  'loveTitle': ['Words from our (imaginary) customers', 'كلمات من زبائننا (الخياليين)'],
+  'loveTitle': [
+    'Words from our customers',
+    'كلمات من زبائننا'
+  ],
   'newsletterTitle': ['First access to new drops', 'أول من يعرف بالجديد'],
-  'newsletterSub': ['Join the list. Fictional newsletter, nothing is sent.', 'انضم للقائمة. نشرة وهمية، لن يُرسل شيء.'],
+  'newsletterSub': [
+    'Join the list for early access to new drops.',
+    'انضم للقائمة لتصلك الإصدارات الجديدة أولاً.'
+  ],
   'emailPlaceholder': ['Your email address', 'بريدك الإلكتروني'],
   'subscribe': ['Subscribe', 'اشترك'],
-  'subscribed': ['Thanks! (This is a demo, nothing was stored.)', 'شكراً! (هذا عرض تجريبي ولم يُحفظ شيء.)'],
+  'subscribed': [
+    'Thanks! (Demo form: nothing was stored.)',
+    'شكراً! (نموذج تجريبي: لم يُحفظ شيء.)'
+  ],
   // shop
   'sortBy': ['Sort by', 'ترتيب حسب'],
   'sortFeatured': ['Featured', 'المميز'],
@@ -150,8 +160,8 @@ const Map<String, List<String>> _s = {
   'cvc': ['CVC', 'رمز الأمان CVC'],
   'payNow': ['Pay', 'ادفع'],
   'demoNote': [
-    'DEMO STORE. This is a fictional shop made for a portfolio. No real payment is processed and your details never leave this page.',
-    'متجر تجريبي. هذا متجر وهمي صُنع لعرض الأعمال. لا تتم أي عملية دفع حقيقية وبياناتك لا تغادر هذه الصفحة.'
+    'Demo checkout: no real payment is processed and your details never leave this page.',
+    'دفع تجريبي: لا تتم أي عملية دفع حقيقية وبياناتك لا تغادر هذه الصفحة.'
   ],
   'testCardHint': ['Test card: 4242 4242 4242 4242, any future date, any CVC', 'بطاقة تجريبية: 4242 4242 4242 4242 وأي تاريخ مستقبلي وأي CVC'],
   'orderSummary': ['Order summary', 'ملخص الطلب'],
@@ -184,17 +194,20 @@ const Map<String, List<String>> _s = {
   'noOrder': ['No recent order to show.', 'لا يوجد طلب حديث للعرض.'],
   // footer
   'footerAbout': [
-    'Khayt (Arabic for "thread") is a fictional fashion atelier created as a Flutter portfolio project: cart, card checkout and a colour-reactive storefront.',
-    'خيط أتيليه أزياء وهمي أُنشئ كمشروع لعرض الأعمال بـ Flutter: سلة وشراء ببطاقة وواجهة يتغيّر لونها مع كل قطعة.'
+    'Khayt (Arabic for "thread") is a fashion atelier for soft knits and honest everyday pieces.',
+    'خيط (أي "الخيط" بالعربية) أتيليه أزياء للحياكة الناعمة والقطع اليومية الصادقة.'
   ],
   'helpCol': ['Help', 'مساعدة'],
   'companyCol': ['Company', 'الشركة'],
   'legalCol': ['Legal', 'قانوني'],
   'shopCol': ['Shop', 'تسوّق'],
-  'rights': ['© 2026 Khayt Atelier (fictional). All rights reserved.', '© ٢٠٢٦ أتيليه خيط (وهمي). جميع الحقوق محفوظة.'],
+  'rights': [
+    '© 2026 Khayt Atelier. All rights reserved.',
+    '© ٢٠٢٦ أتيليه خيط. جميع الحقوق محفوظة.'
+  ],
   'fictionalNotice': [
-    'Khayt is not a real company. Product photos are from Unsplash. Orders, prices and reviews are fictional.',
-    'خيط ليست شركة حقيقية. صور المنتجات من Unsplash. الطلبات والأسعار والتقييمات وهمية.'
+    'Designed and built by Muhammed Elhuseyin.',
+    'تصميم وبرمجة Muhammed Elhuseyin.'
   ],
   'photoCredit': ['Photos: Unsplash', 'الصور: Unsplash'],
   // contact
