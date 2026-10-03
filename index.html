@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/khayt-fashion-store/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Khayt (خيط) — a fictional fashion store built with Flutter. Portfolio demo: cart, card checkout, 3D knitwear viewer.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Khayt">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <!-- Social preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Khayt — خيط | Fashion Store Demo">
+  <meta property="og:description" content="A fictional fashion atelier built with Flutter: 3D knitwear viewer, colour-reactive storefront, cart and simulated card checkout.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f1ea">
+
+  <title>Khayt — خيط | Fashion Store Demo</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    #splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#f6f1ea;z-index:10;transition:opacity .5s ease}
+    #splash.gone{opacity:0;pointer-events:none}
+    #splash .mark{font:700 34px/1 Georgia,"Times New Roman",serif;letter-spacing:.32em;color:#1c1a17;padding-left:.32em}
+    #splash .sub{font:600 11px/1 system-ui,sans-serif;letter-spacing:.38em;color:#8a8378;padding-left:.38em}
+    #splash .bar{width:120px;height:3px;border-radius:3px;background:#e6ded2;overflow:hidden;position:relative}
+    #splash .bar::after{content:"";position:absolute;inset:0;width:40%;background:#c4572f;border-radius:3px;animation:slide 1.1s ease-in-out infinite}
+    @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+  </style>
+</head>
+<body style="background:#f6f1ea;margin:0">
+  <div id="splash"><div class="mark">KHAYT</div><div class="sub">FASHION ATELIER</div><div class="bar"></div></div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('splash');
+      if (s) { s.classList.add('gone'); setTimeout(function () { s.remove(); }, 600); }
+    });
+  </script>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
