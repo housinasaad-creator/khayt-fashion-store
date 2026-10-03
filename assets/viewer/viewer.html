@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  canvas{display:block;touch-action:none;outline:none}
+</style>
+<script type="importmap">{"imports":{"three":"./three.module.js"}}</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from './OrbitControls.js';
+import { RoomEnvironment } from './RoomEnvironment.js';
+
+const params = new URLSearchParams(location.search);
+const STYLE = params.get('style') || 'crew';
+const START_COLOR = params.get('color') || '#d8c3a5';
+
+const STYLES = {
+  crew:     { chest: 0.86, hem: 0.78, depth: 0.40, length: 0.98, sleeveOut: 1.0,  sleeveLen: 1.0,  neck: 0.34, scale: 1.0,  pattern: 'knit', ribbed: true  },
+  oversize: { chest: 1.02, hem: 0.98, depth: 0.46, length: 1.05, sleeveOut: 1.12, sleeveLen: 1.14, neck: 0.38, scale: 0.93, pattern: 'rib',  ribbed: false },
+};
+const S = STYLES[STYLE] || STYLES.crew;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+camera.position.set(0, 0.15, 6.4);
+
+const key = new THREE.DirectionalLight(0xfff1dd, 1.5);
+key.position.set(3, 4, 5);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xbfd6ff, 0.8);
+rim.position.set(-4, 2, -4);
+scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcdbfae, 0.35));
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.6;
+controls.minPolarAngle = 1.15;
+controls.maxPolarAngle = 1.95;
+controls.target.set(0, -0.05, 0);
+let resumeTimer;
+controls.addEventListener('start', () => { controls.autoRotate = false; clearTimeout(resumeTimer); });
+controls.addEventListener('end', () => { resumeTimer = setTimeout(() => controls.autoRotate = true, 2200); });
+
+// ---------- procedural textures ----------
+function knitCanvas() {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#b4b4b4'; g.fillRect(0, 0, 256, 256);
+  const cw = 16, ch = 16;
+  g.lineCap = 'round';
+  for (let y = -1; y <= 16; y++) {
+    for (let x = -1; x <= 16; x++) {
+      const ox = x * cw + ((y & 1) ? cw / 2 : 0), oy = y * ch;
+      g.lineWidth = 4.2;
+      g.strokeStyle = 'rgba(0,0,0,.30)';
+      g.beginPath(); g.moveTo(ox + 3.2, oy + 3.6); g.lineTo(ox + cw / 2 + 1, oy + ch - 1.5); g.stroke();
+      g.beginPath(); g.moveTo(ox + cw - 2.2, oy + 3.6); g.lineTo(ox + cw / 2 + 1, oy + ch - 1.5); g.stroke();
+      g.strokeStyle = 'rgba(255,255,255,.85)';
+      g.beginPath(); g.moveTo(ox + 2, oy + 2); g.lineTo(ox + cw / 2, oy + ch - 3); g.stroke();
+      g.strokeStyle = 'rgba(255,255,255,.65)';
+      g.beginPath(); g.moveTo(ox + cw - 3, oy + 2); g.lineTo(ox + cw / 2, oy + ch - 3); g.stroke();
+    }
+  }
+  return c;
+}
+function ribCanvas() {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const g = c.getContext('2d');
+  for (let x = 0; x < 64; x += 8) {
+    const grad = g.createLinearGradient(x, 0, x + 8, 0);
+    grad.addColorStop(0, '#9c9c9c'); grad.addColorStop(0.5, '#f4f4f4'); grad.addColorStop(1, '#9c9c9c');
+    g.fillStyle = grad; g.fillRect(x, 0, 8, 64);
+  }
+  return c;
+}
+const knitBase = knitCanvas(), ribBase = ribCanvas();
+
+function tex(canvas, rx, ry, srgb = true) {
+  const t = new THREE.CanvasTexture(canvas);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(rx, ry);
+  t.anisotropy = 8;
+  if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+const fabricMats = [];
+function fabric(kind, rx, ry) {
+  const useRib = kind === 'rib';
+  const canvas = useRib ? ribBase : knitBase;
+  const map = tex(canvas, rx, ry);
+  const bump = tex(canvas, rx, ry, false);
+  const m = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color(START_COLOR),
+    map, bumpMap: bump, bumpScale: useRib ? 2.2 : 1.6,
+    roughness: 0.93, metalness: 0,
+    sheen: 0.35, sheenRoughness: 0.7, sheenColor: new THREE.Color(0xdddddd),
+  });
+  fabricMats.push(m);
+  return m;
+}
+const liningMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(START_COLOR).multiplyScalar(0.55), roughness: 1, side: THREE.BackSide });
+
+// ---------- geometry helpers ----------
+function grid(nu, nv, fn, flip = false) {
+  const pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nv; j++) {
+    for (let i = 0; i <= nu; i++) {
+      const u = i / nu, v = j / nv;
+      const p = fn(u, v);
+      pos.push(p[0], p[1], p[2]);
+      uv.push(u, v);
+    }
+  }
+  for (let j = 0; j < nv; j++) {
+    for (let i = 0; i < nu; i++) {
+      const a = j * (nu + 1) + i, b = a + 1, c = a + (nu + 1), d = c + 1;
+      if (flip) idx.push(a, b, c, b, d, c); else idx.push(a, c, b, b, c, d);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  const n = g.getAttribute('normal');
+  for (let j = 0; j <= nv; j++) {
+    const a = j * (nu + 1), b = a + nu;
+    const nx = (n.getX(a) + n.getX(b)) / 2, ny = (n.getY(a) + n.getY(b)) / 2, nz = (n.getZ(a) + n.getZ(b)) / 2;
+    const l = Math.hypot(nx, ny, nz) || 1;
+    n.setXYZ(a, nx / l, ny / l, nz / l); n.setXYZ(b, nx / l, ny / l, nz / l);
+  }
+  return g;
+}
+const sstep = THREE.MathUtils.smoothstep, lerp = THREE.MathUtils.lerp;
+
+function torsoPoint(u, v) {
+  const th = u * Math.PI * 2;
+  const y0 = -S.length, y1 = S.length;
+  let y = y0 + (y1 - y0) * v;
+  const w = lerp(S.hem, S.chest, sstep(v, 0, 0.62));
+  const s = sstep(v, 0.84, 1.0);
+  const rx = lerp(w, S.neck, Math.pow(s, 1.9));
+  const rz = lerp(S.depth, S.depth * 0.74, Math.pow(s, 1.2));
+  const wr = 1 + 0.011 * Math.sin(th * 6 + v * 11) + 0.007 * Math.sin(th * 13 - v * 7);
+  const ct = Math.cos(th), st = Math.sin(th);
+  const x = rx * ct * wr, z = rz * st * wr;
+  y -= 0.50 * Math.pow(Math.abs(x), 1.2) * sstep(v, 0.5, 0.92);
+  y -= 0.20 * sstep(v, 0.9, 1.0);
+  y += 0.045 * Math.sin(th * 3.0 + 1.3) * (1 - v);
+  return [x, y, z];
+}
+
+function ringBand(yTop, yBot, rx, rz, bulge = 1.0) {
+  return grid(72, 6, (u, v) => {
+    const th = u * Math.PI * 2;
+    const y = lerp(yTop, yBot, v);
+    const k = bulge + 0.015 * Math.sin(v * Math.PI);
+    return [rx * k * Math.cos(th), y, rz * k * Math.sin(th)];
+  });
+}
+
+function sleeveCurve(side) {
+  const o = S.sleeveOut, l = S.sleeveLen;
+  const pts = [
+    [0.40, 0.46, 0.0],
+    [0.92 * o, 0.42, 0.03],
+    [1.28 * o, 0.10 / l, 0.10],
+    [1.50 * o, -0.38 * l, 0.18],
+    [1.62 * o, -0.92 * l, 0.26],
+  ].map(p => new THREE.Vector3(p[0] * side, p[1], p[2]));
+  return new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5);
+}
+function tubeGeo(curve, t0, t1, rFn, nLen = 36, nRad = 40) {
+  const up = new THREE.Vector3(0, 0, 1);
+  return grid(nRad, nLen, (u, v) => {
+    const t = lerp(t0, t1, v);
+    const p = curve.getPointAt(t);
+    const tan = curve.getTangentAt(t).normalize();
+    let n1 = new THREE.Vector3().crossVectors(tan, up).normalize();
+    const n2 = new THREE.Vector3().crossVectors(tan, n1).normalize();
+    const th = u * Math.PI * 2;
+    const r = rFn(t);
+    const wob = 1 + 0.012 * Math.sin(th * 5 + t * 18);
+    const q = p.clone()
+      .add(n1.multiplyScalar(Math.cos(th) * r * wob))
+      .add(n2.multiplyScalar(Math.sin(th) * r * 0.9 * wob));
+    return [q.x, q.y, q.z];
+  }, true);
+}
+
+// ---------- build garment ----------
+const garment = new THREE.Group();
+const knitKind = S.pattern === 'rib' ? 'rib' : 'knit';
+const bodyRepU = knitKind === 'rib' ? 18 : 7.2, bodyRepV = knitKind === 'rib' ? 7 : 3.4;
+
+const torsoGeo = grid(96, 64, torsoPoint);
+const torso = new THREE.Mesh(torsoGeo, fabric(knitKind, bodyRepU, bodyRepV));
+const torsoIn = new THREE.Mesh(torsoGeo, liningMat);
+garment.add(torso, torsoIn);
+
+const hemRx = S.hem * 1.03, hemRz = S.depth * 1.05;
+const hemY = -S.length;
+const hemMesh = new THREE.Mesh(ringBand(hemY + 0.02, hemY - 0.20, hemRx, hemRz, 1.0), fabric('rib', 16, 1.2));
+const hemIn = new THREE.Mesh(ringBand(hemY + 0.02, hemY - 0.20, hemRx, hemRz, 1.0), liningMat);
+garment.add(hemMesh, hemIn);
+
+for (const side of [1, -1]) {
+  const curve = sleeveCurve(side);
+  const rFn = t => lerp(0.37, 0.215, Math.pow(t, 0.7)) * (0.15 + 0.85 * sstep(t, 0, 0.09));
+  const slv = new THREE.Mesh(tubeGeo(curve, 0, 0.9, rFn), fabric(knitKind, bodyRepU * 0.4, bodyRepV * 0.9));
+  const slvIn = new THREE.Mesh(tubeGeo(curve, 0, 0.9, rFn), liningMat);
+  const cuff = new THREE.Mesh(tubeGeo(curve, 0.88, 1.0, t => lerp(0.215, 0.19, (t - 0.88) / 0.12) * 1.01, 8, 40), fabric('rib', 10, 1));
+  const cuffIn = new THREE.Mesh(tubeGeo(curve, 0.88, 1.0, t => lerp(0.215, 0.19, (t - 0.88) / 0.12) * 1.01, 8, 40), liningMat);
+  garment.add(slv, slvIn, cuff, cuffIn);
+}
+
+// collar
+const collarGeo = new THREE.TorusGeometry(S.neck * 0.98, 0.085, 20, 72);
+const collar = new THREE.Mesh(collarGeo, fabric('rib', 30, 2));
+collar.rotation.x = Math.PI / 2 - 0.12;
+collar.scale.set(1, 0.84, 1);
+let ringY = 0; for (let i = 0; i < 64; i++) ringY += torsoPoint(i / 64, 1)[1]; ringY /= 64;
+collar.position.set(0, ringY + 0.01, -0.02);
+garment.add(collar);
+
+// woven label
+(function label() {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 80;
+  const g = c.getContext('2d');
+  g.fillStyle = '#1b1a17'; g.fillRect(0, 0, 256, 80);
+  g.fillStyle = '#f4efe6'; g.font = '700 38px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('KHAYT', 128, 42);
+  g.strokeStyle = 'rgba(244,239,230,.5)'; g.lineWidth = 2; g.strokeRect(6, 6, 244, 68);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.30, 0.094), new THREE.MeshStandardMaterial({ map: t, roughness: 0.85 }));
+  const x = S.hem * 0.52, zz = S.depth * Math.sqrt(Math.max(0, 1 - (x / S.hem) ** 2));
+  const nx = x / (S.hem * S.hem), nz = zz / (S.depth * S.depth), ang = Math.atan2(nx, nz);
+  m.position.set(x + Math.sin(ang) * 0.012, hemY + 0.22, zz + Math.cos(ang) * 0.012);
+  m.rotation.y = ang;
+  garment.add(m);
+})();
+
+garment.scale.setScalar(S.scale);
+garment.position.y = 0.05;
+scene.add(garment);
+
+// soft contact shadow
+(function shadow() {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const gr = g.createRadialGradient(64, 64, 4, 64, 64, 62);
+  gr.addColorStop(0, 'rgba(0,0,0,.38)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2;
+  m.position.y = -1.62;
+  scene.add(m);
+})();
+
+// ---------- color handling ----------
+const target = new THREE.Color(START_COLOR);
+const current = new THREE.Color(START_COLOR);
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (d && d.type === 'color' && typeof d.value === 'string') target.set(d.value);
+});
+renderer.domElement.addEventListener('wheel', e => {
+  parent.postMessage({ type: 'wheel', dy: e.deltaY }, '*');
+}, { passive: true });
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  renderer.domElement.style.width = w + 'px';
+  renderer.domElement.style.height = h + 'px';
+  camera.aspect = w / h;
+  // keep the garment's full width (sleeves included) in frame on narrow boxes
+  camera.fov = Math.max(30, 2 * Math.atan(0.30 / camera.aspect) * 180 / Math.PI);
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+const clock = new THREE.Clock();
+function frame() {
+  const t = clock.getElapsedTime();
+  current.lerp(target, 0.09);
+  for (const m of fabricMats) m.color.copy(current);
+  liningMat.color.copy(current).multiplyScalar(0.55);
+  garment.position.y = 0.05 + Math.sin(t * 1.1) * 0.03;
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+parent.postMessage({ type: 'ready' }, '*');
+</script>
+</body>
+</html>
