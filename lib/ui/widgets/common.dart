@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import '../../core/app_state.dart';
 import '../../core/strings.dart';
 import '../theme.dart';
@@ -155,4 +159,89 @@ void showToast(BuildContext context, String text, {SnackBarAction? action}) {
       duration: const Duration(milliseconds: 3200),
       persist: false,
     ));
+}
+
+/// Keeps a page section in memory only while it is near the screen.
+/// Farther than [margin] viewport heights above or below, the section is replaced by an empty box
+/// of exactly the same height (so the scroll position never jumps) and its photos are released;
+/// it is rebuilt when the visitor scrolls back toward it.
+class LazyMount extends StatefulWidget {
+  final Widget child;
+  final double margin;
+  const LazyMount({super.key, required this.child, this.margin = 1.0});
+
+  @override
+  State<LazyMount> createState() => _LazyMountState();
+}
+
+class _LazyMountState extends State<LazyMount> {
+  ScrollPosition? _pos;
+  double _h = 0;
+  bool _alive = true;
+  String _sig = '';
+  static Timer? _purge;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final size = MediaQuery.sizeOf(context);
+    final sig = '${size.width.round()}|${Localizations.localeOf(context)}|${Directionality.of(context)}';
+    if (sig != _sig) {
+      // the layout may have changed while this section was away: measure it again from scratch
+      final first = _sig.isEmpty;
+      _sig = sig;
+      if (!first && !_alive) _alive = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _check());
+    }
+    final p = Scrollable.maybeOf(context)?.position;
+    if (p != _pos) {
+      _pos?.removeListener(_check);
+      _pos = p;
+      _pos?.addListener(_check);
+      WidgetsBinding.instance.addPostFrameCallback((_) => _check());
+    }
+  }
+
+  @override
+  void dispose() {
+    _pos?.removeListener(_check);
+    super.dispose();
+  }
+
+  void _check() {
+    if (!mounted) return;
+    final pos = _pos;
+    final ro = context.findRenderObject();
+    if (pos == null || ro is! RenderBox || !ro.attached || !ro.hasSize) return;
+    final viewport = RenderAbstractViewport.maybeOf(ro);
+    if (viewport == null) return;
+    final vh = pos.viewportDimension;
+    double top, bottom;
+    try {
+      top = viewport.getOffsetToReveal(ro, 0.0).offset - pos.pixels;
+      bottom = top + ro.size.height;
+    } catch (_) {
+      return; // a neighbouring section is mid-rebuild and not laid out yet; the next scroll tick measures again
+    }
+    final near = bottom > -vh * widget.margin && top < vh * (1 + widget.margin);
+    if (_alive) _h = ro.size.height;
+    if (near == _alive) return;
+    void apply() {
+      if (!mounted) return;
+      setState(() => _alive = near);
+      if (!near) {
+        // let the decoded copies of the photos that just left go right away
+        _purge?.cancel();
+        _purge = Timer(const Duration(milliseconds: 500), () => PaintingBinding.instance.imageCache.clear());
+      }
+    }
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => apply());
+    } else {
+      apply();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => _alive ? widget.child : SizedBox(height: _h);
 }

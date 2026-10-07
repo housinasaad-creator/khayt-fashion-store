@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/products.dart';
+import 'common.dart';
 import 'product_card.dart';
 
 class ProductGrid extends StatelessWidget {
@@ -18,7 +19,7 @@ class ProductGrid extends StatelessWidget {
       return Wrap(
         spacing: spacing,
         runSpacing: spacing + 8,
-        children: [for (final p in products) SizedBox(width: cell, child: ProductCard(p))],
+        children: [for (final p in products) SizedBox(width: cell, child: LazyMount(child: ProductCard(p)))],
       );
     });
   }

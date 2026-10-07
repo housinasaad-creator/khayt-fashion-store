@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final railItems = [...featured, for (final p in kProducts) if (!featured.contains(p)) p].take(18).toList();
     final arrivals = kProducts.where((p) => p.id != featProduct.id).take(8).toList();
 
-    return PageBody(children: [
+    return PageBody(lazy: true, children: [
       _hero(context, mobile, ar),
       const SizedBox(height: 28),
       const _Marquee(),

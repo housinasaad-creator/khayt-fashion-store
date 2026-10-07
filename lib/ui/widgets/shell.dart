@@ -5,6 +5,7 @@ import '../../core/strings.dart';
 import '../theme.dart';
 import 'card_marks.dart';
 import 'cart_panel.dart';
+import 'common.dart';
 import 'logo.dart';
 
 /// Persistent frame around the Navigator: announcement bar, header, drawers.
@@ -257,7 +258,9 @@ class MobileMenu extends StatelessWidget {
 class PageBody extends StatefulWidget {
   final List<Widget> children;
   final bool footer;
-  const PageBody({super.key, required this.children, this.footer = true});
+  /// Long photo-heavy pages: sections far from the screen are unmounted (see [LazyMount]).
+  final bool lazy;
+  const PageBody({super.key, required this.children, this.footer = true, this.lazy = false});
   @override
   State<PageBody> createState() => _PageBodyState();
 }
@@ -278,7 +281,11 @@ class _PageBodyState extends State<PageBody> {
       child: SingleChildScrollView(
         controller: sc,
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          ...widget.children,
+          if (widget.lazy)
+            for (var i = 0; i < widget.children.length; i++)
+              (i == 0 || (widget.children[i] is SizedBox && (widget.children[i] as SizedBox).child == null)) ? widget.children[i] : LazyMount(child: widget.children[i])
+          else
+            ...widget.children,
           if (widget.footer) const SiteFooter(),
         ]),
       ),

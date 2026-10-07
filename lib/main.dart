@@ -14,6 +14,11 @@ import 'ui/theme.dart';
 import 'ui/widgets/shell.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // keep decoded photos within a small budget; pictures of sections that left the screen are dropped
+  PaintingBinding.instance.imageCache
+    ..maximumSize = 90
+    ..maximumSizeBytes = 64 << 20;
   runApp(const KhaytApp());
 }
 
